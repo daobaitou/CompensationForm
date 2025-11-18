@@ -169,31 +169,61 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>情况说明:</label>
-                                <input type="text" v-model="formData['Situation Explanation']" required />
-                            </div>
-                            <div class="form-group">
-                                <label>日期:</label>
-                                <input type="date" v-model="formData.time" required />
-                            </div>
-                        </div>
+                                <div class="situation-selector">
+                                    <!-- 第一级选择 -->
+                                    <select v-model="selectedSituation.level1" @change="clearLowerLevels(1)"
+                                        class="situation-select">
+                                        <option value="">请选择问题类型</option>
+                                        <option v-for="(children, key) in situationOptions" :key="key" :value="key">
+                                            {{ key }}
+                                        </option>
+                                    </select>
 
-                        <div class="form-row">
-                            <div class="form-group full-width">
-                                <label>备注:</label>
-                                <div class="rich-editor-wrapper">
-                                    <RichEditor :content="formData['Note'] || ''"
-                                        @save="(content) => { formData['Note'] = content }" @cancel="() => { }"
-                                        @fileSelectStart="isSelectingFile = true"
-                                        @fileSelectEnd="isSelectingFile = false" />
+                                    <!-- 第二级选择 -->
+                                    <select v-if="selectedSituation.level1 && getLevel2Options()"
+                                        v-model="selectedSituation.level2" @change="clearLowerLevels(2)"
+                                        class="situation-select">
+                                        <option value="">请选择具体问题</option>
+                                        <option v-for="(children, key) in getLevel2Options()" :key="key" :value="key">
+                                            {{ key }}
+                                        </option>
+                                    </select>
+
+                                    <!-- 第三级选择 -->
+                                    <select v-if="selectedSituation.level2 && getLevel3Options()"
+                                        v-model="selectedSituation.level3" class="situation-select">
+                                        <option value="">请选择详细问题</option>
+                                        <option v-for="(children, key) in getLevel3Options()" :key="key" :value="key">
+                                            {{ key }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <!-- 将选择的结果组合成字符串保存到formData -->
+                                <input type="hidden" v-model="formData['Situation Explanation']" />
+                            </div>
+                                <div class="form-group">
+                                    <label>日期:</label>
+                                    <input type="date" v-model="formData.time" required />
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group full-width">
+                                    <label>备注:</label>
+                                    <div class="rich-editor-wrapper">
+                                        <RichEditor :content="formData['Note'] || ''"
+                                            @save="(content) => { formData['Note'] = content }" @cancel="() => { }"
+                                            @fileSelectStart="isSelectingFile = true"
+                                            @fileSelectEnd="isSelectingFile = false" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="modal-actions">
-                        <button type="submit">保存</button>
-                        <button type="button" @click="closeModal">取消</button>
-                    </div>
+                        <div class="modal-actions">
+                            <button type="submit">保存</button>
+                            <button type="button" @click="closeModal">取消</button>
+                        </div>
                 </form>
             </div>
         </div>
@@ -248,6 +278,87 @@ const showEditNoteModal = ref(false)  // 添加编辑备注弹窗状态
 const formData = ref({})
 const noteData = ref({})  // 添加备注数据存储
 const showFilterPanel = ref(false)
+
+const situationOptions = ref({
+    '餐品问题': {
+        '吃出异物': null,
+        '商家做错餐': null,
+        '餐品损坏': {
+            '餐品送到站点溢出或损坏': null,
+            '在分餐站点造成餐品损坏': null,
+            '在配送过程中造成餐品损坏': null
+        }
+    },
+    '配送问题': {
+        '商家出餐超时': null,
+        '站点滞留': {
+            '滞留10分钟': null,
+            '滞留20分钟': null,
+            '滞留30分钟以上': null
+        },
+        '骑手配送超时': {
+            '配送超过15分钟': null,
+            '配送超过25分钟': null,
+            '配送超过35分钟及以上': null
+        },
+        '餐品丢失': null
+    }
+})
+
+const selectedSituation = ref({
+    level1: '',
+    level2: '',
+    level3: ''
+})
+
+
+//情况选择方法
+// 获取第二级选项
+const getLevel2Options = () => {
+    if (selectedSituation.value.level1 && situationOptions.value[selectedSituation.value.level1]) {
+        return situationOptions.value[selectedSituation.value.level1];
+    }
+    return null;
+}
+
+// 获取第三级选项
+const getLevel3Options = () => {
+    if (selectedSituation.value.level2 && 
+        selectedSituation.value.level1 && 
+        situationOptions.value[selectedSituation.value.level1] &&
+        situationOptions.value[selectedSituation.value.level1][selectedSituation.value.level2]) {
+        return situationOptions.value[selectedSituation.value.level1][selectedSituation.value.level2];
+    }
+    return null;
+}
+
+// 清除较低级别的选择
+const clearLowerLevels = (level) => {
+    if (level === 1) {
+        selectedSituation.value.level2 = '';
+        selectedSituation.value.level3 = '';
+    } else if (level === 2) {
+        selectedSituation.value.level3 = '';
+    }
+    
+    // 更新formData中的情况说明
+    updateSituationExplanation();
+}
+
+// 更新情况说明字段
+const updateSituationExplanation = () => {
+    let explanation = '';
+    if (selectedSituation.value.level1) {
+        explanation += selectedSituation.value.level1;
+        if (selectedSituation.value.level2) {
+            explanation += ' - ' + selectedSituation.value.level2;
+            if (selectedSituation.value.level3) {
+                explanation += ' - ' + selectedSituation.value.level3;
+            }
+        }
+    }
+    formData.value['Situation Explanation'] = explanation;
+}
 
 // 平铺筛选器状态
 const inlineFilters = ref({
@@ -635,9 +746,11 @@ watch(() => props.data, (newData) => {
 .search-filter-box {
     display: flex;
     align-items: flex-start;
-    gap: 100px;/* 搜索框和筛选器之间的间距 */
+    gap: 100px;
+    /* 搜索框和筛选器之间的间距 */
     flex: 1;
-    min-height: 34px; /* 确保最小高度 */
+    min-height: 34px;
+    /* 确保最小高度 */
 }
 
 /* 搜索框样式 */
@@ -654,11 +767,13 @@ watch(() => props.data, (newData) => {
 
 .search-box input {
     width: 100%;
-    padding: 10px 14px; /* 统一内边距 */
+    padding: 10px 14px;
+    /* 统一内边距 */
     border: 1px solid #dcdfe6;
     border-radius: 4px;
     font-size: 14px;
-    height: 36px; /* 固定高度 */
+    height: 36px;
+    /* 固定高度 */
     box-sizing: border-box;
 }
 
@@ -960,22 +1075,28 @@ watch(() => props.data, (newData) => {
     gap: 15px;
     align-items: center;
     flex-wrap: wrap;
-    padding: 2px 0; /* 调整上下内边距 */
+    padding: 2px 0;
+    /* 调整上下内边距 */
 }
 
 .filter-group {
     display: flex;
-    align-items: center; /* 垂直居中对齐 */
-    gap: 5px; /* label和select之间的间距 */
-    white-space: nowrap; /* 防止换行 */
+    align-items: center;
+    /* 垂直居中对齐 */
+    gap: 5px;
+    /* label和select之间的间距 */
+    white-space: nowrap;
+    /* 防止换行 */
 }
 
 .filter-group label {
     font-size: 13px;
     color: #606266;
     font-weight: 500;
-    margin-right: 5px; /* 与选择框的间距 */
-    white-space: nowrap; /* 防止换行 */
+    margin-right: 5px;
+    /* 与选择框的间距 */
+    white-space: nowrap;
+    /* 防止换行 */
 }
 
 .filter-select {
@@ -987,7 +1108,8 @@ watch(() => props.data, (newData) => {
     background-color: white;
     cursor: pointer;
     transition: border-color 0.3s;
-    height: 36px; /* 固定高度与搜索框一致 */
+    height: 36px;
+    /* 固定高度与搜索框一致 */
     box-sizing: border-box;
 }
 
@@ -1006,9 +1128,11 @@ watch(() => props.data, (newData) => {
     cursor: pointer;
     font-size: 13px;
     transition: all 0.3s;
-    height: 36px; /* 固定高度与搜索框一致 */
+    height: 36px;
+    /* 固定高度与搜索框一致 */
     box-sizing: border-box;
-    align-self: flex-start; /* 与其它元素对齐 */
+    align-self: flex-start;
+    /* 与其它元素对齐 */
 }
 
 
@@ -1075,4 +1199,27 @@ watch(() => props.data, (newData) => {
     background-color: #f5f5f5;
     color: #606266;
 }
+
+/* 情况说明选择器样式 */
+.situation-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.situation-select {
+    padding: 10px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.situation-select:focus {
+    border-color: #409EFF;
+    outline: none;
+}
+
 </style>
