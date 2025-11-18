@@ -85,18 +85,18 @@ module.exports = function(db) {
         Note: note
       } = req.body;
 
-      const query = `
-        INSERT INTO orders (
-          pay_id, complaint_channel, phone, order_amount,
-          situation_explanation, indemnitor, compensation_amount,
-          status, note
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
+const query = `
+  INSERT INTO orders (
+    pay_id, complaint_channel, phone, order_amount,
+    situation_explanation, indemnitor, compensation_amount,
+    status, note, time
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
 
       const [result] = await db.query(query, [
         pay_id, complaint_channel, phone, order_amount,
         situation_explanation, indemnitor, compensation_amount,
-        status, note
+        status, note, req.body.time || new Date()
       ]);
 
       // 返回前端期望的格式
