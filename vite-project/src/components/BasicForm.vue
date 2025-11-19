@@ -2,42 +2,60 @@
   <div class="form-container">
     <h1>{{ title }}</h1>
     <!-- 复用现有的 DataTable 组件 -->
-    <DataTable :columns="basicColumns" :data="tableData" :filterableColumns="['投诉渠道', '赔付人']" :showAddButton="false" :showProcessButton="true" @row-action="handleRowAction" />
+    <DataTable :columns="basicColumns" :data="tableData" :filterableColumns="['投诉渠道', '赔付人']" :showAddButton="false"
+      :showProcessButton="true" @row-action="handleRowAction" />
 
     <!-- 处理订单弹窗 -->
     <div v-if="showProcessModal" class="modal" @click="closeProcessModal">
       <div class="modal-content" @click.stop>
         <h2>处理订单</h2>
         <form @submit.prevent="handleProcessSubmit">
-          <div class="form-group">
-            <label>支付编码:</label>
-            <input type="text" v-model="processFormData.pay_id" disabled />
+          <!-- 第一行：支付编码和处理结果 -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>支付编码:</label>
+              <input type="text" v-model="processFormData.pay_id" disabled />
+            </div>
+            <div class="form-group">
+              <label>处理结果:</label>
+              <select v-model="processFormData.status" required>
+                <option value="需赔付订单">需赔付订单</option>
+                <option value="无需赔付订单">无需赔付订单</option>
+              </select>
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label>处理结果:</label>
-            <select v-model="processFormData.status" required>
-              <option value="需赔付订单">需赔付订单</option>
-              <option value="无需赔付订单">无需赔付订单</option>
-            </select>
+
+          <!-- 第二行：赔付方分类和赔付人 -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>赔付方分类:</label>
+              <select v-model="processFormData.indemnitorCategory" required>
+                <option value="">请选择赔付方</option>
+                <option value="商家">商家</option>
+                <option value="站长">站长</option>
+                <option value="骑手">骑手</option>
+                <option value="公司">公司</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>赔付人:</label>
+              <input type="text" v-model="processFormData.indemnitor" :disabled="processFormData.status === '无需赔付订单'"
+                required />
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label>赔付人:</label>
-            <input type="text" v-model="processFormData.indemnitor" required />
+
+          <!-- 第三行：赔付金额 -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>赔付金额:</label>
+              <input type="number" v-model.number="processFormData.compensationAmount" step="0.01" min="0"
+                :disabled="processFormData.status === '无需赔付订单'" />
+            </div>
+            <div class="form-group">
+              <!-- 空白占位，保持布局对称 -->
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label>赔付金额:</label>
-            <input 
-              type="number" 
-              v-model.number="processFormData.compensationAmount" 
-              step="0.01" 
-              min="0"
-              :disabled="processFormData.status === '无需赔付订单'" 
-            />
-          </div>
-          
+
           <div class="modal-actions">
             <button type="submit">保存</button>
             <button type="button" @click="closeProcessModal">取消</button>
@@ -50,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import DataTable from './DataTable.vue'
 import { fetchDataByStatus, updateData, OrderStatus } from '../services/dataService'
 
@@ -71,6 +89,7 @@ const basicColumns = [
 // 初始化数据
 const tableData = ref([])
 
+
 // 处理订单相关状态
 const showProcessModal = ref(false)
 const processFormData = ref({
@@ -78,6 +97,7 @@ const processFormData = ref({
   pay_id: '',
   status: '',
   indemnitor: '',
+  indemnitorCategory: '', // 添加赔付方分类字段
   compensationAmount: 0
 })
 
@@ -89,7 +109,7 @@ onMounted(async () => {
     console.log('URL编码后的状态:', encodedStatus);
     tableData.value = await fetchDataByStatus(OrderStatus.UNPROCESSED);
     console.log('获取到的未处理订单/投诉数据:', tableData.value);
-    
+
     // 验证数据是否都具有正确的状态
     if (tableData.value && Array.isArray(tableData.value)) {
       const invalidData = tableData.value.filter(item => item.status !== OrderStatus.UNPROCESSED);
@@ -121,6 +141,13 @@ const openProcessModal = (item) => {
   showProcessModal.value = true
 }
 
+// 添加监听器：当选择无需赔付时清空赔付人
+watch(() => processFormData.value.status, (newStatus) => {
+  if (newStatus === '无需赔付订单') {
+    processFormData.value.indemnitor = ''
+  }
+})
+
 // 关闭处理订单弹窗
 const closeProcessModal = () => {
   showProcessModal.value = false
@@ -138,7 +165,7 @@ const handleProcessSubmit = async () => {
   try {
     // 查找当前正在处理的订单
     const currentItem = tableData.value.find(item => item.id === processFormData.value.id);
-    
+
     // 构造完整的更新数据，包含所有必需字段
     const updateDataObj = {
       pay_id: currentItem.pay_id,
@@ -146,7 +173,7 @@ const handleProcessSubmit = async () => {
       phone: currentItem.phone,
       'Order Amount': currentItem['Order Amount'],
       'Situation Explanation': currentItem['Situation Explanation'],
-      Indemnitor: processFormData.value.indemnitor,
+      Indemnitor: processFormData.value.status === '无需赔付订单' ? '' : processFormData.value.indemnitor,
       'Compensation Amount': processFormData.value.status === '无需赔付订单' ? 0 : processFormData.value.compensationAmount,
       status: processFormData.value.status,
       Note: currentItem.Note || ''
@@ -154,7 +181,7 @@ const handleProcessSubmit = async () => {
 
     // 发送更新请求
     await updateData(processFormData.value.id, updateDataObj)
-    
+
     // 更新本地数据
     const index = tableData.value.findIndex(item => item.id === processFormData.value.id)
     if (index !== -1) {
@@ -162,10 +189,10 @@ const handleProcessSubmit = async () => {
       tableData.value[index].Indemnitor = processFormData.value.indemnitor
       tableData.value[index]['Compensation Amount'] = processFormData.value.status === '无需赔付订单' ? '0.00' : processFormData.value.compensationAmount.toFixed(2)
     }
-    
+
     // 关闭弹窗
     closeProcessModal()
-    
+
     alert('订单处理成功！')
   } catch (error) {
     console.error('处理订单失败:', error)
@@ -244,4 +271,41 @@ const handleProcessSubmit = async () => {
   color: #606266;
 }
 
+/* 处理弹窗 */
+.modal-content .form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.modal-content .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-content .form-group label {
+  font-size: 14px;
+  color: #606266;
+  margin-bottom: 4px;
+}
+
+.modal-content .form-group input,
+.modal-content .form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+/* 当输入框被禁用时的样式 */
+.modal-content .form-group input:disabled {
+  background-color: #f5f7fa;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
 </style>

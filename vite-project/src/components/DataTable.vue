@@ -3,7 +3,7 @@
         <div class="table-header">
             <div class="search-filter-box">
                 <div class="search-box">
-                    <input type="text" v-model="searchQuery" placeholder="搜索..." @input="handleSearch"
+                    <input type="text" v-model="searchQuery" placeholder="搜索支付编码、电话、赔付人..." @input="handleSearch"
                         class="search-input" />
                 </div>
 
@@ -11,44 +11,34 @@
                 <div class="inline-filters">
                     <div class="filter-group">
                         <label>时间:</label>
-                        <select v-model="inlineFilters.time" class="filter-select" @change="applyFilters">
-                            <option value="">全部时间</option>
-                            <option v-for="time in getTimeOptions()" :key="time" :value="time">
-                                {{ time }}
+                        <div class="time-range-filter">
+                            <input type="date" v-model="inlineFilters.timeStart" class="filter-select time-input"
+                                placeholder="开始时间" />
+                            <span class="time-separator">至</span>
+                            <input type="date" v-model="inlineFilters.timeEnd" class="filter-select time-input"
+                                placeholder="结束时间" />
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>投诉情况:</label>
+                        <select v-model="inlineFilters.situation" class="filter-select" @change="applyFilters">
+                            <option value="">全部投诉情况</option>
+                            <option v-for="situation in getSituationOptions()" :key="situation" :value="situation">
+                                {{ situation }}
                             </option>
                         </select>
                     </div>
 
                     <div class="filter-group">
-                        <label>订单ID:</label>
-                        <select v-model="inlineFilters.payId" class="filter-select" @change="applyFilters">
-                            <option value="">全部订单</option>
-                            <option v-for="id in getPayIdOptions()" :key="id" :value="id">
-                                {{ id }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>姓名:</label>
+                        <label>赔付人:</label>
                         <select v-model="inlineFilters.name" class="filter-select" @change="applyFilters">
-                            <option value="">全部姓名</option>
+                            <option value="">全部赔付人</option>
                             <option v-for="name in getNameOptions()" :key="name" :value="name">
                                 {{ name }}
                             </option>
                         </select>
                     </div>
-
-                    <div class="filter-group">
-                        <label>电话:</label>
-                        <select v-model="inlineFilters.phone" class="filter-select" @change="applyFilters">
-                            <option value="">全部电话</option>
-                            <option v-for="phone in getPhoneOptions()" :key="phone" :value="phone">
-                                {{ phone }}
-                            </option>
-                        </select>
-                    </div>
-
                     <button v-if="hasActiveInlineFilters" class="clear-filter-btn" @click="clearInlineFilters">
                         清除筛选
                     </button>
@@ -201,29 +191,29 @@
                                 <!-- 将选择的结果组合成字符串保存到formData -->
                                 <input type="hidden" v-model="formData['Situation Explanation']" />
                             </div>
-                                <div class="form-group">
-                                    <label>日期:</label>
-                                    <input type="date" v-model="formData.time" required />
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group full-width">
-                                    <label>备注:</label>
-                                    <div class="rich-editor-wrapper">
-                                        <RichEditor :content="formData['Note'] || ''"
-                                            @save="(content) => { formData['Note'] = content }" @cancel="() => { }"
-                                            @fileSelectStart="isSelectingFile = true"
-                                            @fileSelectEnd="isSelectingFile = false" />
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label>日期:</label>
+                                <input type="date" v-model="formData.time" required />
                             </div>
                         </div>
 
-                        <div class="modal-actions">
-                            <button type="submit">保存</button>
-                            <button type="button" @click="closeModal">取消</button>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>备注:</label>
+                                <div class="rich-editor-wrapper">
+                                    <RichEditor :content="formData['Note'] || ''"
+                                        @save="(content) => { formData['Note'] = content }" @cancel="() => { }"
+                                        @fileSelectStart="isSelectingFile = true"
+                                        @fileSelectEnd="isSelectingFile = false" />
+                                </div>
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit">保存</button>
+                        <button type="button" @click="closeModal">取消</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -311,6 +301,11 @@ const selectedSituation = ref({
     level3: ''
 })
 
+// 获取情况说明选项
+const getSituationOptions = () => {
+    const situations = [...new Set(tableData.value.map(item => item['Situation Explanation'] || ''))]
+    return situations.filter(situation => situation)
+}
 
 //情况选择方法
 // 获取第二级选项
@@ -323,8 +318,8 @@ const getLevel2Options = () => {
 
 // 获取第三级选项
 const getLevel3Options = () => {
-    if (selectedSituation.value.level2 && 
-        selectedSituation.value.level1 && 
+    if (selectedSituation.value.level2 &&
+        selectedSituation.value.level1 &&
         situationOptions.value[selectedSituation.value.level1] &&
         situationOptions.value[selectedSituation.value.level1][selectedSituation.value.level2]) {
         return situationOptions.value[selectedSituation.value.level1][selectedSituation.value.level2];
@@ -340,7 +335,7 @@ const clearLowerLevels = (level) => {
     } else if (level === 2) {
         selectedSituation.value.level3 = '';
     }
-    
+
     // 更新formData中的情况说明
     updateSituationExplanation();
 }
@@ -362,10 +357,10 @@ const updateSituationExplanation = () => {
 
 // 平铺筛选器状态
 const inlineFilters = ref({
-    time: '',
-    payId: '',
-    name: '',
-    phone: ''
+    timeStart: '',
+    timeEnd: '',
+    situation: '',
+    name: ''
 })
 
 // 筛选相关状态
@@ -423,7 +418,10 @@ const getPhoneOptions = () => {
 
 // 是否有激活的平铺筛选条件
 const hasActiveInlineFilters = computed(() => {
-    return Object.values(inlineFilters.value).some(value => value !== '')
+    return inlineFilters.value.timeStart ||
+        inlineFilters.value.timeEnd ||
+        inlineFilters.value.situation ||
+        inlineFilters.value.name
 })
 
 // 更新筛选处理方法
@@ -435,10 +433,10 @@ const handleFilterApply = (filters) => {
 // 清除平铺筛选器
 const clearInlineFilters = () => {
     inlineFilters.value = {
-        time: '',
-        payId: '',
-        name: '',
-        phone: ''
+        timeStart: '',
+        timeEnd: '',
+        situation: '',
+        name: ''
     }
     // 需要添加这行来触发数据刷新
     currentPage.value = 1
@@ -459,7 +457,7 @@ const hasActiveFilters = computed(() => {
     return Object.values(activeFilters.value).some(value => value !== '')
 })
 
-// 更新 filteredData 计算属性
+// filteredData 计算属性
 const filteredData = computed(() => {
     let result = [...tableData.value]
 
@@ -472,21 +470,30 @@ const filteredData = computed(() => {
         })
     }
 
-    // 应用平铺筛选条件
-    if (inlineFilters.value.time) {
-        result = result.filter(item => item.time === inlineFilters.value.time)
+    // 应用时间范围筛选条件
+    if (inlineFilters.value.timeStart || inlineFilters.value.timeEnd) {
+        result = result.filter(item => {
+            if (!item.time) return false
+
+            const itemDate = new Date(item.time)
+            const startDate = inlineFilters.value.timeStart ? new Date(inlineFilters.value.timeStart) : null
+            const endDate = inlineFilters.value.timeEnd ? new Date(inlineFilters.value.timeEnd) : null
+
+            if (startDate && itemDate < startDate) return false
+            if (endDate && itemDate > endDate) return false
+
+            return true
+        })
     }
 
-    if (inlineFilters.value.payId) {
-        result = result.filter(item => item.pay_id === inlineFilters.value.payId)
+    // 应用情况说明筛选条件
+    if (inlineFilters.value.situation) {
+        result = result.filter(item => item['Situation Explanation'] === inlineFilters.value.situation)
     }
 
+    // 应用姓名筛选条件
     if (inlineFilters.value.name) {
         result = result.filter(item => item.Indemnitor === inlineFilters.value.name)
-    }
-
-    if (inlineFilters.value.phone) {
-        result = result.filter(item => item.phone === inlineFilters.value.phone)
     }
 
     // 应用分页
@@ -1079,6 +1086,7 @@ watch(() => props.data, (newData) => {
     /* 调整上下内边距 */
 }
 
+/* 筛选组样式 */
 .filter-group {
     display: flex;
     align-items: center;
@@ -1222,4 +1230,25 @@ watch(() => props.data, (newData) => {
     outline: none;
 }
 
+/* 时间范围筛选器样式 */
+.time-range-filter {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.time-input {
+    width: 120px;
+    padding: 8px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 13px;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.time-separator {
+    font-size: 13px;
+    color: #606266;
+}
 </style>
