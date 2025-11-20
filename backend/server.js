@@ -4,6 +4,7 @@ const mysql = require('mysql2');
 const setupDatabase = require('./setup/dbSetup');
 const seedData = require('./setup/seedData');
 const imageRoutes = require('./routes/image'); // 添加图片路由
+const migrateDatabase = require('./setup/migrate');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,6 +56,10 @@ async function init() {
     
     console.log('创建数据库连接池成功');
     
+    // 执行数据库迁移
+    await migrateDatabase(dbPool);
+    console.log('数据库迁移已执行');
+
     // 插入测试数据
     await seedData(dbPool);
     console.log('测试数据插入完成');
@@ -78,4 +83,5 @@ async function init() {
   }
 }
 
+// 启动初始化函数
 init();

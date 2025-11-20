@@ -21,6 +21,8 @@ async function setupDatabase(db) {
         status ENUM('未处理订单/投诉', '需赔付订单', '无需赔付订单') NOT NULL,
         time DATETIME DEFAULT CURRENT_TIMESTAMP,
         note TEXT,
+        classification_of_payers VARCHAR(100),  
+        detailed_explanation TEXT,             
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
