@@ -1,10 +1,10 @@
 <template>
   <div class="rich-editor">
     <div class="editor-toolbar">
-      <button @click="addText" title="添加文本">T</button>
       <button @click="addImage" title="添加图片">🖼️</button>
+      <!-- <button @click="addText" title="添加文本">T</button>
       <button @click="saveContent" title="保存">💾</button>
-      <button @click="cancelEdit" title="取消">❌</button>
+      <button @click="cancelEdit" title="取消">❌</button> -->
     </div>
     <div       
       class="editor-content" 

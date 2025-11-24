@@ -5,13 +5,18 @@ import { useReportStore } from '../stores/report'
 export const OrderStatus = {
   UNPROCESSED: '未处理订单/投诉',
   NEED_COMPENSATION: '需赔付订单',
-  NO_COMPENSATION: '无需赔付订单'
+  NO_COMPENSATION: '无需赔付订单',
+  CONFIRMED_PAYMENT: '确认可赔付',
+  COMPENSATED:'确认已赔付',
+  CONFIRMED_NO_COMPENSATION: '确认无需赔付',
+  REJECTED_NEED_COMPENSATION:'被驳回需赔付订单',
+  REJECTED_NO_COMPENSATION:'被驳回无需赔付'
 }
 
 // API 基础 URL
-const API_BASE_URL = 'http://localhost:3000/api'
+//const API_BASE_URL = 'http://localhost:3000/api'
 //const API_BASE_URL = 'http://172.16.2.137:5014/api'
-
+const API_BASE_URL = 'http://8.137.122.136/api'  // 服务器地址
 
 // 获取所有数据
 export const fetchData = async () => {
@@ -89,7 +94,7 @@ export const addData = async (data) => {
 // 更新数据
 export const updateData = async (id, data) => {
   try {
-    console.log('开始更新数据:', { id, data });
+    console.log('开始更新数据，ID:', id, '数据:', data);
     const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
       method: 'PUT',
       headers: {
@@ -99,22 +104,27 @@ export const updateData = async (id, data) => {
     })
     
     console.log('更新请求已发送，响应状态:', response.status);
+    console.log('响应对象:', response);
     
+    // 检查响应是否成功
     if (!response.ok) {
       const errorText = await response.text();
       console.error('更新数据失败，服务器响应:', errorText);
-      throw new Error('更新数据失败')
+      console.error('响应状态码:', response.status);
+      console.error('响应状态文本:', response.statusText);
+      throw new Error(`更新数据失败: ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const result = await response.json()
+    const result = await response.json();
     console.log('数据更新成功，返回结果:', result);
-    return result
+    return result;
   } catch (error) {
-    console.error('更新数据错误:', error)
-    throw error
+    console.error('更新数据过程中发生错误:', error);
+    console.error('错误名称:', error.name);
+    console.error('错误消息:', error.message);
+    throw error;
   }
 }
-
 // 删除数据
 export const deleteData = async (id) => {
   try {

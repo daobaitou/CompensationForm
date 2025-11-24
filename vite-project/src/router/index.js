@@ -4,6 +4,11 @@ import BasicForm from '../components/BasicForm.vue'
 import ComplaintForm from '../components/ComplaintForm.vue'
 import DailyReport from '../components/DailyReport.vue'
 import MonthlyReport from '../components/MonthlyReport.vue'
+import CompensatedOrders from '../components/CompensatedOrders.vue'
+import ConfirmedNoCompensationOrders from '../components/ConfirmedNoCompensationOrders.vue'
+import NeedCompensationOrders from '../components/NeedCompensationOrders.vue'
+import NoCompensationOrders from '../components/NoCompensationOrders.vue'
+import ConfirmedPaymentOrders from '../components/ConfirmedPaymentOrders.vue'
 
 const routes = [
   {
@@ -17,6 +22,26 @@ const routes = [
   {
     path: '/compensation/Complaint',
     component: ComplaintForm
+  },
+  {
+    path: '/compensation/compensated',
+    component: CompensatedOrders
+  },
+  {
+    path: '/compensation/confirmed-no-compensation',
+    component: ConfirmedNoCompensationOrders
+  },
+  {
+    path: '/compensation/need-compensation',
+    component: NeedCompensationOrders
+  },
+  {
+    path: '/compensation/no-compensation',
+    component: NoCompensationOrders
+  },
+  {
+    path: '/compensation/confirmed-payment',
+    component: ConfirmedPaymentOrders
   },
   {
     path: '/statistics/daily',

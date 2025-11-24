@@ -6,6 +6,10 @@ const seedData = require('./setup/seedData');
 const imageRoutes = require('./routes/image'); // 添加图片路由
 const migrateDatabase = require('./setup/migrate');
 
+
+// 导入数据库配置
+const dbConfig = require('./config/db');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,14 +32,7 @@ async function init() {
     console.log('开始初始化数据库...');
     
     // 先创建不指定数据库的连接池
-    const initialPool = mysql.createPool({
-      host: 'localhost',
-      user: 'root',
-      password: '1',
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    }).promise();
+    const initialPool = dbConfig;
     
     console.log('创建初始连接池成功');
     
@@ -44,15 +41,7 @@ async function init() {
     console.log('数据库初始化成功');
     
     // 现在创建指定数据库的连接池
-    dbPool = mysql.createPool({
-      host: 'localhost',
-      user: 'root',
-      password: '1',
-      database: 'compensation_db', // 现在可以指定数据库了
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    }).promise();
+    dbPool = dbConfig;
     
     console.log('创建数据库连接池成功');
     
@@ -69,7 +58,7 @@ async function init() {
     app.use('/api', orderRoutes);
     
     // 启动服务器
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, '0.0.0.0',() =>{
       console.log(`服务器运行在端口 ${PORT}`);
     });
     

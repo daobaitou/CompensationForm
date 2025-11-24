@@ -22,7 +22,7 @@ const basicColumns = [
   { key: 'Indemnitor', title: '赔付人' },
   { key: 'Compensation Amount', title: '赔付金额' },
   { key: 'status', title: '处理结果' },
-  { key: 'time', title: '日期' },
+  { key: 'time', title: '投诉单下单日期' },
   { key: 'Note', title: '备注' }
 ]
 

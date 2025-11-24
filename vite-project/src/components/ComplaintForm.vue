@@ -2,7 +2,7 @@
   <div class="form-container">
     <h1>{{ title }}</h1>
     <DataTable :columns="columns" :data="tableData" 
-    :filterableColumns="['投诉渠道', '赔付人']" :showAddButton="true"/>
+    :filterableColumns="['投诉渠道', '赔付人']" :showAddButton="true" :showEditButton="true" :enableFullEdit="true"/>
     <!-- 筛条件设置 filterableColumns -->
   </div>
 </template>
@@ -15,17 +15,17 @@ import { fetchData } from '../services/dataService'
 
 
 const reportStore = useReportStore()
-const title = '投诉'
+const title = '投诉订单'
 const columns = [
   { key: 'pay_id', title: '支付编码' },
   { key: 'Complaint channel', title: '投诉渠道' },
-  { key: 'phone', title: '电话' },
+  { key: 'phone', title: '投诉人电话' },
   { key: 'Order Amount', title: '订单金额' },
   { key: 'Situation Explanation', title: '情况说明' },
   { key: 'Indemnitor', title: '赔付人' },
   { key: 'Compensation Amount', title: '赔付金额' },
   { key: 'status', title: '处理结果' },
-  { key: 'time', title: '日期' },
+  { key: 'time', title: '投诉单下单日期' },
   { key: 'Note', title: '备注' }
 ]
 

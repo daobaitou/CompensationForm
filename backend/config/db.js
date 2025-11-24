@@ -3,9 +3,9 @@ const mysql = require('mysql2');
 // 创建数据库连接池
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'root', // 替换为你的 MySQL 用户名
-  password: '1', // 替换为你的 MySQL 密码
-  //database: 'compensation_db', // 数据库名称
+  user: 'compensation_user', // 替换为你的 MySQL 用户名
+  password: 'compensation_password', // 替换为你的 MySQL 密码
+  database: 'compensation_db', // 数据库名称
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0

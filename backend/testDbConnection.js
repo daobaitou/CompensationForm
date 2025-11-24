@@ -3,8 +3,8 @@ const mysql = require('mysql2');
 // 测试数据库连接
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'root',
-  password: '1',
+  user: 'compensation_user',
+  password: 'compensation_password',
   database: 'compensation_db',
   waitForConnections: true,
   connectionLimit: 10,

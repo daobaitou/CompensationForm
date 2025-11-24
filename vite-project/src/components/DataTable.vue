@@ -4,7 +4,7 @@
             <div class="search-filter-box">
                 <div class="search-box">
                     <input type="text" v-model="searchQuery" placeholder="搜索支付编码、电话、赔付人..." @input="handleSearch"
-                        class="search-input" />
+                        @keydown.stop @click.stop class="search-input" />
                 </div>
 
                 <!-- 平铺筛选器 -->
@@ -13,10 +13,10 @@
                         <label>时间:</label>
                         <div class="time-range-filter">
                             <input type="date" v-model="inlineFilters.timeStart" class="filter-select time-input"
-                                placeholder="开始时间" />
+                                placeholder="年/月/日" />
                             <span class="time-separator">至</span>
                             <input type="date" v-model="inlineFilters.timeEnd" class="filter-select time-input"
-                                placeholder="结束时间" />
+                                placeholder="年/月/日" />
                         </div>
                     </div>
 
@@ -85,9 +85,16 @@
                         </div>
                     </td>
                     <td class="actions">
-                        <button class="edit-btn" @click="handleEdit(item)">编辑</button>
+                        <button v-if="showEditButton" class="edit-btn" @click="handleEdit(item)">编辑</button>
                         <button v-if="showProcessButton" class="process-btn"
-                            @click="$emit('row-action', 'process', item)">处理</button>
+                                @click="$emit('row-action', 'process', item)">
+                                {{ item.status === '确认可赔付' ? '赔付' : '处理' }}
+                        </button>
+                    </td>
+                </tr>
+                <tr v-if="filteredData.length === 0">
+                    <td :colspan="columns.length + 1" class="no-data">
+                        处理完成！
                     </td>
                 </tr>
             </tbody>
@@ -108,9 +115,9 @@
         <div v-if="showAddModal || showEditModal" class="modal" @click.self="closeModal">
             <div class="modal-content" @click.stop>
                 <h3>{{ showEditModal ? '编辑数据' : '添加数据' }}</h3>
-                <form @submit.prevent="handleSubmit">
-                    <!-- 在编辑模式下，只显示备注字段 -->
-                    <div v-if="showEditModal">
+                <form @submit.prevent="validateForm() && handleSubmit()">
+                    <!-- 在编辑模式下，根据enableFullEdit属性决定显示所有字段还是仅备注字段 -->
+                    <div v-if="showEditModal && !props.enableFullEdit">
                         <div class="form-group">
                             <label>备注:</label>
                             <div class="rich-editor-wrapper">
@@ -122,48 +129,53 @@
                         </div>
                     </div>
 
-                    <!-- 在添加模式下，显示所有字段 -->
+                    <!-- 在添加模式下，或者在启用了全字段编辑的编辑模式下，显示所有字段 -->
                     <div v-else>
                         <!-- 自定义添加表单字段，每行两个字段 -->
                         <div class="form-row">
                             <div class="form-group">
-                                <label>支付编码:</label>
+                                <label><span class="required">*</span>支付编码:</label>
                                 <input type="text" v-model="formData.pay_id" required />
+                                <div v-if="formData.pay_id && formData.pay_id.length !== 28" class="field-hint error">
+                                    支付编码必须为28位
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label>投诉渠道:</label>
+                                <label><span class="required">*</span>投诉渠道:</label>
                                 <select v-model="formData['Complaint channel']" required>
-                                    <option value="">请选择投诉渠道</option>
-                                    <option value="学校">学校</option>
-                                    <option value="监管部门">监管部门</option>
+                                    <option value="商户号">商户号</option>
+                                    <option value="小程序">小程序</option>
                                     <option value="微信公众号">微信公众号</option>
                                     <option value="电话">电话</option>
-                                    <option value="小程序">小程序</option>
-                                    <option value="商户号">商户号</option>
                                     <option value="企微">企微</option>
+                                    <option value="客服微信">客服微信</option>
+                                    <option value="学校">学校</option> 
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>电话:</label>
+                                <label><span class="required">*</span>投诉人电话:</label>
                                 <input type="text" v-model="formData.phone" required />
+                                <div v-if="formData.phone && formData.phone.length !== 11" class="field-hint error">
+                                    电话号码必须为11位
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label>订单金额:</label>
+                                <label><span class="required">*</span>订单金额:</label>
                                 <input type="text" v-model="formData['Order Amount']" required />
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>情况说明:</label>
+                                <label><span class="required">*</span>情况说明:</label>
                                 <div class="situation-selector">
                                     <!-- 第一级选择 -->
                                     <select v-model="selectedSituation.level1" @change="clearLowerLevels(1)"
                                         class="situation-select">
-                                        <option value="">请选择问题类型</option>
+                                        <option value="" disabled selected style="color: #aaa;">请选择问题类型</option>
                                         <option v-for="(children, key) in situationOptions" :key="key" :value="key">
                                             {{ key }}
                                         </option>
@@ -173,7 +185,7 @@
                                     <select v-if="selectedSituation.level1 && getLevel2Options()"
                                         v-model="selectedSituation.level2" @change="clearLowerLevels(2)"
                                         class="situation-select">
-                                        <option value="">请选择具体问题</option>
+                                        <option value="" disabled selected style="color: #aaa;">请选择具体问题</option>
                                         <option v-for="(children, key) in getLevel2Options()" :key="key" :value="key">
                                             {{ key }}
                                         </option>
@@ -182,7 +194,7 @@
                                     <!-- 第三级选择 -->
                                     <select v-if="selectedSituation.level2 && getLevel3Options()"
                                         v-model="selectedSituation.level3" class="situation-select">
-                                        <option value="">请选择详细问题</option>
+                                        <option value="" disabled selected style="color: #aaa;">请选择详细问题</option>
                                         <option v-for="(children, key) in getLevel3Options()" :key="key" :value="key">
                                             {{ key }}
                                         </option>
@@ -192,8 +204,18 @@
                                 <input type="hidden" v-model="formData['Situation Explanation']" />
                             </div>
                             <div class="form-group">
-                                <label>日期:</label>
-                                <input type="date" v-model="formData.time" required />
+                                <label><span class="required">*</span>日期:</label>
+                                <input 
+                                    type="date" 
+                                    v-model="formData.time" 
+                                    required 
+                                    :max="todayDate"
+                                    @blur="validateDate"
+                                    class="date-input"
+                                    placeholder="年/月/日"
+                                />
+                                <div v-if="dateError" class="field-hint error">{{ dateError }}</div>
+                                <div class="field-hint">请选择正确的日期</div>
                             </div>
                         </div>
 
@@ -225,7 +247,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, nextTick, watch, onUnmounted} from 'vue'
 import FilterDialog from './FilterDialog.vue'
 import RichEditor from './RichEditor.vue'
 
@@ -254,12 +276,23 @@ const props = defineProps({
     showProcessButton: {
         type: Boolean,
         default: false // 默认不显示处理按钮
+    },
+    showEditButton: {
+        type: Boolean,
+        default: false // 默认不显示编辑按钮
+    },
+    enableFullEdit: {
+        type: Boolean,
+        default: false // 默认不启用全字段编辑
     }
 })
 
 // 响应式数据
 const tableData = ref([])
 const searchQuery = ref('')
+const todayDate = ref(new Date().toISOString().split('T')[0])
+const dateError = ref('')
+const searchTimer = ref(null) // 添加这一行
 const currentPage = ref(1)
 const pageSize = ref(20)//每页显示的数据量
 const showAddModal = ref(false)
@@ -268,6 +301,7 @@ const showEditNoteModal = ref(false)  // 添加编辑备注弹窗状态
 const formData = ref({})
 const noteData = ref({})  // 添加备注数据存储
 const showFilterPanel = ref(false)
+const shouldCloseModal = ref(false) //添加一个新的响应式变量来跟踪模态框是否应该关闭
 
 const situationOptions = ref({
     '餐品问题': {
@@ -292,7 +326,8 @@ const situationOptions = ref({
             '配送超过35分钟及以上': null
         },
         '餐品丢失': null
-    }
+    },
+    '其他': null
 })
 
 const selectedSituation = ref({
@@ -303,8 +338,15 @@ const selectedSituation = ref({
 
 // 获取情况说明选项
 const getSituationOptions = () => {
-    const situations = [...new Set(tableData.value.map(item => item['Situation Explanation'] || ''))]
-    return situations.filter(situation => situation)
+    const situations = [...new Set(tableData.value.map(item => {
+        const situation = item['Situation Explanation'];
+        // 检查值是否为null或undefined
+        if (situation === null || situation === undefined) {
+            return '';
+        }
+        return situation;
+    }))]
+    return situations.filter(situation => situation !== '')
 }
 
 //情况选择方法
@@ -381,10 +423,25 @@ const availableFilters = computed(() => {
     const filters = {}
     props.columns.forEach(column => {
         if (props.filterableColumns && props.filterableColumns.includes(column.title)) {
-            const values = [...new Set(tableData.value.map(item => item[column.key]))]
+            const values = [...new Set(tableData.value.map(item => {
+                const value = item[column.key];
+                // 检查值是否为null或undefined
+                if (value === null || value === undefined) {
+                    return '';
+                }
+                // 处理对象类型
+                if (typeof value === 'object') {
+                    try {
+                        return JSON.stringify(value);
+                    } catch (e) {
+                        return '';
+                    }
+                }
+                return value;
+            }))]
             filters[column.key] = {
                 title: column.title,
-                values: values.filter(value => value)
+                values: values.filter(value => value !== '')
             }
         }
     })
@@ -394,26 +451,54 @@ const availableFilters = computed(() => {
 
 // 获取时间选项
 const getTimeOptions = () => {
-    const times = [...new Set(tableData.value.map(item => item.time || ''))]
-    return times.filter(time => time)
+    const times = [...new Set(tableData.value.map(item => {
+        const time = item.time;
+        // 检查值是否为null或undefined
+        if (time === null || time === undefined) {
+            return '';
+        }
+        return time;
+    }))]
+    return times.filter(time => time !== '')
 }
 
 // 获取订单ID选项
 const getPayIdOptions = () => {
-    const payIds = [...new Set(tableData.value.map(item => item.pay_id || ''))]
-    return payIds.filter(id => id)
+    const payIds = [...new Set(tableData.value.map(item => {
+        const payId = item.pay_id;
+        // 检查值是否为null或undefined
+        if (payId === null || payId === undefined) {
+            return '';
+        }
+        return payId;
+    }))]
+    return payIds.filter(id => id !== '')
 }
 
 // 获取姓名选项（这里假设姓名在Indemnitor字段）
 const getNameOptions = () => {
-    const names = [...new Set(tableData.value.map(item => item.Indemnitor || ''))]
-    return names.filter(name => name)
+    const names = [...new Set(tableData.value.map(item => {
+        const name = item.Indemnitor;
+        // 检查值是否为null或undefined
+        if (name === null || name === undefined) {
+            return '';
+        }
+        return name;
+    }))]
+    return names.filter(name => name !== '')
 }
 
 // 获取电话选项
 const getPhoneOptions = () => {
-    const phones = [...new Set(tableData.value.map(item => item.phone || ''))]
-    return phones.filter(phone => phone)
+    const phones = [...new Set(tableData.value.map(item => {
+        const phone = item.phone;
+        // 检查值是否为null或undefined
+        if (phone === null || phone === undefined) {
+            return '';
+        }
+        return phone;
+    }))]
+    return phones.filter(phone => phone !== '')
 }
 
 // 是否有激活的平铺筛选条件
@@ -459,15 +544,34 @@ const hasActiveFilters = computed(() => {
 
 // filteredData 计算属性
 const filteredData = computed(() => {
+    // 如果原始数据为空，直接返回空数组
+    if (!tableData.value || tableData.value.length === 0) {
+        return []
+    }
+    
     let result = [...tableData.value]
 
     // 应用搜索条件
     if (searchQuery.value) {
         result = result.filter(item => {
-            return Object.values(item).some(value =>
-                value.toString().toLowerCase().includes(searchQuery.value.toLowerCase())
-            )
-        })
+            return Object.values(item).some(value => {
+                // 检查值是否为null或undefined
+                if (value === null || value === undefined) {
+                    return false;
+                }
+                // 处理不同类型的值
+                if (typeof value === 'object') {
+                    // 对于对象类型，尝试转换为字符串
+                    try {
+                        return JSON.stringify(value).toLowerCase().includes(searchQuery.value.toLowerCase());
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                // 对于基本类型，直接转换为字符串进行比较
+                return value.toString().toLowerCase().includes(searchQuery.value.toLowerCase());
+            });
+        });
     }
 
     // 应用时间范围筛选条件
@@ -477,7 +581,12 @@ const filteredData = computed(() => {
 
             const itemDate = new Date(item.time)
             const startDate = inlineFilters.value.timeStart ? new Date(inlineFilters.value.timeStart) : null
-            const endDate = inlineFilters.value.timeEnd ? new Date(inlineFilters.value.timeEnd) : null
+            let endDate = inlineFilters.value.timeEnd ? new Date(inlineFilters.value.timeEnd) : null
+            
+            // 将结束日期设置为当天的最后一刻 (23:59:59)
+            if (endDate) {
+                endDate.setHours(23, 59, 59, 999)
+            }
 
             if (startDate && itemDate < startDate) return false
             if (endDate && itemDate > endDate) return false
@@ -515,6 +624,7 @@ const handleSearch = () => {
     currentPage.value = 1
 }
 
+
 const handleEdit = (item) => {
     formData.value = { ...item }
     showEditModal.value = true
@@ -544,7 +654,21 @@ const loadData = async () => {
     }
 }
 
-
+// 格式化日期为北京时间格式
+const formatDateToBeijingTime = (dateInput) => {
+    const date = new Date(dateInput);
+    // 处理日期字符串格式，避免时区问题
+    if (typeof dateInput === 'string' && dateInput.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        // 如果是 YYYY-MM-DD 格式的字符串，直接使用
+        return dateInput + ' 00:00:00';
+    }
+    // 使用本地时区而非UTC时间来避免日期偏移问题
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    // 返回格式化的日期字符串 YYYY-MM-DD 00:00:00
+    return `${year}-${month}-${day} 00:00:00`;
+}
 
 //后端测试用的提交方法
 const handleSubmit = async () => {
@@ -553,13 +677,27 @@ const handleSubmit = async () => {
             // 更新数据
             await updateData(formData.value.id, formData.value)
         } else {
+            // 验证支付编码长度
+            if (formData.value.pay_id && formData.value.pay_id.length !== 28) {
+                alert('支付编码必须为28位');
+                return;
+            }
+            
+            // 验证手机号长度
+            if (formData.value.phone && formData.value.phone.length !== 11) {
+                alert('手机号必须为11位');
+                return;
+            }
+            
             // 添加数据
             // 为新数据设置默认值
             const newData = {
                 ...formData.value,
                 status: formData.value.status || '未处理订单/投诉', // 正确的默认状态值
                 Indemnitor: formData.value.Indemnitor || '',
-                'Compensation Amount': formData.value['Compensation Amount'] || '0.00'
+                'Compensation Amount': formData.value['Compensation Amount'] || '0.00',
+                // 确保时间字段正确传递，使用北京时间
+                time: formData.value.time ? formatDateToBeijingTime(formData.value.time) : formatDateToBeijingTime(new Date())
             };
             await addData(newData)
         }
@@ -574,13 +712,37 @@ const handleSubmit = async () => {
 }
 
 
-// 添加一个新的响应式变量来跟踪模态框是否应该关闭
-
-const shouldCloseModal = ref(false)
-
 // 处理模态框获得焦点
 const onModalFocusIn = () => {
     //shouldCloseModal.value = false
+}
+
+// 验证日期
+const validateDate = () => {
+    if (!formData.value.time) {
+        dateError.value = '请选择日期'
+        return false
+    }
+    
+    const selectedDate = new Date(formData.value.time)
+    const now = new Date()
+    
+    // 重置时间为00:00:00进行比较
+    now.setHours(0, 0, 0, 0)
+    selectedDate.setHours(0, 0, 0, 0)
+    
+    if (selectedDate > now) {
+        dateError.value = '不能选择未来的日期'
+        return false
+    }
+    
+    dateError.value = ''
+    return true
+}
+
+// 在提交前验证日期
+const validateForm = () => {
+    return validateDate()
 }
 
 // 处理模态框失去焦点
@@ -721,7 +883,7 @@ onMounted(async () => {
 
 // 监听传入数据的变化
 watch(() => props.data, (newData) => {
-    if (newData && newData.length > 0) {
+    if (newData) {
         tableData.value = newData
     }
 }, { immediate: true })
@@ -948,6 +1110,27 @@ watch(() => props.data, (newData) => {
     border: 1px solid #dcdfe6;
     border-radius: 4px;
     font-size: 14px;
+}
+
+.form-group .date-input {
+    cursor: pointer;
+}
+
+.form-group .date-input:focus {
+    border-color: #409EFF;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+}
+
+/* 字段提示文字样式 */
+.field-hint {
+    font-size: 12px;
+    margin-top: 4px;
+    color: #909399;
+}
+
+.field-hint.error {
+    color: #f56c6c;
 }
 
 .form-group select {
@@ -1251,4 +1434,28 @@ watch(() => props.data, (newData) => {
     font-size: 13px;
     color: #606266;
 }
+
+/* 必填字段标记样式 */
+.required {
+    color: #f56c6c;
+    margin-left: 4px;
+}
+
+/* 字段提示文字样式 */
+.field-hint {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.field-hint.error {
+    color: #f56c6c;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #909399;
+  font-size: 16px;
+}
+
 </style>
