@@ -51,21 +51,34 @@
             </div>
           </div>
 
-          <!-- 第三行：赔付金额 -->
+          <!-- 第三行：订单金额和赔付金额 -->
           <div class="form-row">
             <div class="form-group">
-              <label>赔付金额:</label>
-              <input type="number" v-model.number="processFormData.compensationAmount" step="0.01" min="0"
-                :disabled="processFormData.status === '无需赔付订单'" />
+              <label>订单金额:</label>
+              <input type="number" v-model="processFormData.orderAmount" disabled />
             </div>
             <div class="form-group">
-              <!-- 空白占位，保持布局对称 -->
+              <label>赔付金额:</label>
+              <input type="number" step="0.01" v-model="processFormData.compensationAmount" 
+                :disabled="processFormData.status === '无需赔付订单'" required />
             </div>
           </div>
 
-          <div class="modal-actions">
-            <button type="submit">保存</button>
-            <button type="button" @click="closeProcessModal">取消</button>
+          <!-- 第四行：详细说明 -->
+          <div class="form-group full-width">
+            <label>详细说明:</label>
+            <textarea v-model="processFormData.detailedExplanation" placeholder="请输入详细说明"></textarea>
+          </div>
+
+          <!-- 第五行：备注 -->
+          <div class="form-group full-width">
+            <label>备注:</label>
+            <textarea v-model="processFormData.note" placeholder="请输入备注信息"></textarea>
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" @click="closeProcessModal" class="cancel-btn">取消</button>
+            <button type="submit" class="submit-btn">确定</button>
           </div>
         </form>
       </div>
@@ -79,16 +92,14 @@ import { ref, onMounted, watch } from 'vue'
 import DataTable from './DataTable.vue'
 import { fetchDataByStatus, updateData, OrderStatus } from '../services/dataService'
 
-const title = '未判责订单'
+const title = '待判责订单'
 const columns = [
   { key: 'pay_id', title: '支付编码' },
   { key: 'Complaint channel', title: '投诉渠道' },
   { key: 'phone', title: '投诉人电话' },
   { key: 'Order Amount', title: '订单金额' },
   { key: 'Situation Explanation', title: '情况说明' },
-  { key: 'Indemnitor', title: '赔付人' },
-  { key: 'Compensation Amount', title: '赔付金额' },
-  { key: 'status', title: '处理结果' },
+  { key: 'status', title: '状态' },
   { key: 'time', title: '投诉单下单日期' },
   { key: 'Note', title: '备注' }
 ]
@@ -102,28 +113,30 @@ const showProcessModal = ref(false)
 const processFormData = ref({
   id: null,
   pay_id: '',
-  status: '',
+  status: '需赔付订单', // 默认选择需赔付订单
+  indemnitorCategory: '',
   indemnitor: '',
-  indemnitorCategory: '', // 添加赔付方分类字段
-  compensationAmount: 0
+  orderAmount: 0,
+  compensationAmount: 0,
+  detailedExplanation: '',
+  note: ''
 })
 
 onMounted(async () => {
   try {
-    console.log('开始请求未处理订单/投诉数据，状态:', OrderStatus.UNPROCESSED);
-    // 添加URL编码
-    const encodedStatus = encodeURIComponent(OrderStatus.UNPROCESSED);
-    console.log('URL编码后的状态:', encodedStatus);
-    tableData.value = await fetchDataByStatus(OrderStatus.UNPROCESSED);
-    console.log('获取到的未处理订单/投诉数据:', tableData.value);
-
-    // 验证数据是否都具有正确的状态
-    if (tableData.value && Array.isArray(tableData.value)) {
-      const invalidData = tableData.value.filter(item => item.status !== OrderStatus.UNPROCESSED);
-      if (invalidData.length > 0) {
-        console.warn('发现状态不正确的数据:', invalidData);
-      }
-    }
+    // 获取未处理订单/投诉
+    const unprocessedData = await fetchDataByStatus(OrderStatus.UNPROCESSED);
+    
+    // 获取被驳回需赔付订单
+    const rejectedNeedCompensationData = await fetchDataByStatus(OrderStatus.REJECTED_NEED_COMPENSATION);
+    
+    // 获取被驳回无需赔付订单
+    const rejectedNoCompensationData = await fetchDataByStatus(OrderStatus.REJECTED_NO_COMPENSATION);
+    
+    // 合并三种状态的数据
+    tableData.value = [...unprocessedData, ...rejectedNeedCompensationData, ...rejectedNoCompensationData];
+    
+    console.log('获取到的待判责订单数据:', tableData.value);
   } catch (error) {
     console.error('获取数据失败:', error);
   }
@@ -141,10 +154,13 @@ const openProcessModal = (item) => {
   processFormData.value = {
     id: item.id,
     pay_id: item.pay_id,
-    status: item.status === OrderStatus.NEED_COMPENSATION ? '需赔付订单' : '无需赔付订单',
-    indemnitorCategory: item['Classification of Payers'] || '', // 添加赔付方分类字段
+    status: item.status === OrderStatus.REJECTED_NEED_COMPENSATION || item.status === OrderStatus.UNPROCESSED ? '需赔付订单' : '无需赔付订单',
+    indemnitorCategory: item['Classification of Payers'] || '',
     indemnitor: item.Indemnitor || '',
-    compensationAmount: parseFloat(item['Compensation Amount']) || 0
+    orderAmount: parseFloat(item['Order Amount']) || 0,
+    compensationAmount: parseFloat(item['Compensation Amount']) || 0,
+    detailedExplanation: item['Detailed explanation'] || '',
+    note: item.Note || ''
   }
   showProcessModal.value = true
 }
@@ -153,21 +169,14 @@ const openProcessModal = (item) => {
 watch(() => processFormData.value.status, (newStatus) => {
   if (newStatus === '无需赔付订单') {
     processFormData.value.indemnitor = ''
-    processFormData.value.indemnitorCategory = '' // 同时清空赔付方分类
+    processFormData.value.indemnitorCategory = ''
+    processFormData.value.compensationAmount = 0
   }
 })
 
 // 关闭处理弹窗
 const closeProcessModal = () => {
   showProcessModal.value = false
-  processFormData.value = {
-    id: null,
-    pay_id: '',
-    status: '需赔付订单',
-    indemnitorCategory: '',
-    indemnitor: '',
-    compensationAmount: 0
-  }
 }
 
 // 处理赔付方分类变化事件
@@ -191,33 +200,34 @@ const handleProcessSubmit = async () => {
       phone: currentItem.phone,
       'Order Amount': currentItem['Order Amount'],
       'Situation Explanation': currentItem['Situation Explanation'],
-      'Classification of Payers': processFormData.value.status === '无需赔付订单' ? '' : processFormData.value.indemnitorCategory, // 添加赔付方分类
+      'Classification of Payers': processFormData.value.status === '无需赔付订单' ? '' : processFormData.value.indemnitorCategory,
       Indemnitor: processFormData.value.status === '无需赔付订单' ? '' : processFormData.value.indemnitor,
-      'Compensation Amount': processFormData.value.status === '无需赔付订单' ? 0 : processFormData.value.compensationAmount,
-      status: processFormData.value.status === '需赔付订单' ? OrderStatus.NEED_COMPENSATION : OrderStatus.NO_COMPENSATION, // 使用枚举值
-      Note: currentItem.Note || '',
-      'Detailed explanation': currentItem['Detailed explanation'] || '' // 添加详细说明字段
+      'Compensation Amount': processFormData.value.status === '无需赔付订单' ? '0.00' : processFormData.value.compensationAmount.toFixed(2),
+      status: processFormData.value.status === '需赔付订单' ? OrderStatus.NEED_COMPENSATION : OrderStatus.NO_COMPENSATION,
+      Note: processFormData.value.note,
+      'Detailed explanation': processFormData.value.detailedExplanation,
+      time: currentItem.time // 保留原始投诉日期
     }
 
     // 发送更新请求
     await updateData(processFormData.value.id, updateDataObj)
-
+    
     // 更新本地数据
-    const index = tableData.value.findIndex(item => item.id === processFormData.value.id)
-    if (index !== -1) {
-      tableData.value[index].status = processFormData.value.status === '需赔付订单' ? OrderStatus.NEED_COMPENSATION : OrderStatus.NO_COMPENSATION // 使用枚举值
-      tableData.value[index]['Classification of Payers'] = processFormData.value.status === '无需赔付订单' ? '' : processFormData.value.indemnitorCategory // 更新赔付方分类
-      tableData.value[index].Indemnitor = processFormData.value.indemnitor
-      tableData.value[index]['Compensation Amount'] = processFormData.value.status === '无需赔付订单' ? '0.00' : processFormData.value.compensationAmount.toFixed(2)
+    const updatedItemIndex = tableData.value.findIndex(item => item.id === processFormData.value.id)
+    if (updatedItemIndex !== -1) {
+      tableData.value[updatedItemIndex] = { 
+        ...tableData.value[updatedItemIndex], 
+        ...updateDataObj 
+      }
     }
 
     // 关闭弹窗
     closeProcessModal()
-
-    alert('订单处理成功！')
+    
+    alert('订单处理成功!')
   } catch (error) {
-    console.error('订单处理失败:', error)
-    alert('订单处理失败: ' + error.message)
+    console.error('处理订单失败:', error)
+    alert('处理订单失败: ' + (error.message || '未知错误'))
   }
 }
 
