@@ -73,23 +73,26 @@
             </thead>
             <tbody>
                 <tr v-for="item in filteredData" :key="item.id">
-                    <td v-for="column in columns" :key="column.key">
-                        <div class="cell-content">
-                            <template v-if="column.key === 'Note' && item[column.key]">
-                                <div v-if="isRichContent(item[column.key])" v-html="item[column.key]"
-                                    class="rich-content-display">
-                                </div>
-                                <div v-else>{{ item[column.key] }}</div>
-                            </template>
-                            <div v-else>{{ item[column.key] }}</div>
+                    <td v-for="column in columns" :key="column.key" @click="handleCellClick(item, column, $event)">
+                        <!-- 特殊处理时间列，只显示年月日 -->
+                        <div v-if="column.key === 'time'">
+                            {{ formatDateForDisplay(item[column.key]) }}
+                        </div>
+                        <!-- 特殊处理备注列，支持富文本显示 -->
+                        <div v-else-if="column.key === 'Note' && item[column.key]" class="rich-content-display"
+                            v-html="item[column.key]">
+                        </div>
+                        <!-- 普通列 -->
+                        <div v-else>
+                            {{ item[column.key] }}
                         </div>
                     </td>
-                    <td class="actions">
-                        <button v-if="showEditButton" class="edit-btn" @click="handleEdit(item)">编辑</button>
-                        <button v-if="showProcessButton" class="process-btn"
-                                @click="$emit('row-action', 'process', item)">
-                                {{ item.status === '确认可赔付' ? '赔付' : '处理' }}
-                        </button>
+                    <td>
+                        <div class="actions">
+                            <button v-if="props.showProcessButton" class="process-btn" @click="$emit('row-action', 'process', item)">处理
+                            </button>
+                            <button v-if="props.showEditButton" class="edit-btn" @click="handleEdit(item)">编辑</button>
+                        </div>
                     </td>
                 </tr>
                 <tr v-if="filteredData.length === 0">
@@ -122,7 +125,7 @@
                             <label>备注:</label>
                             <div class="rich-editor-wrapper">
                                 <RichEditor :content="formData['Note'] || ''"
-                                    @save="(content) => { formData['Note'] = content }" @cancel="() => { }"
+                                    @save="content => formData['Note'] = content" @cancel="() => {}"
                                     @fileSelectStart="isSelectingFile = true"
                                     @fileSelectEnd="isSelectingFile = false" />
                             </div>
@@ -207,7 +210,8 @@
                                 <label><span class="required">*</span>日期:</label>
                                 <input 
                                     type="date" 
-                                    v-model="formData.time" 
+                                    :value="formatDateForDisplay(formData.time)" 
+                                    @input="e => formData.time = e.target.value" 
                                     required 
                                     :max="todayDate"
                                     @blur="validateDate"
@@ -215,7 +219,7 @@
                                     placeholder="年/月/日"
                                 />
                                 <div v-if="dateError" class="field-hint error">{{ dateError }}</div>
-                                <div class="field-hint">请选择正确的日期</div>
+                                <div v-else class="field-hint">请选择正确的日期</div>
                             </div>
                         </div>
 
@@ -224,7 +228,9 @@
                                 <label>备注:</label>
                                 <div class="rich-editor-wrapper">
                                     <RichEditor :content="formData['Note'] || ''"
-                                        @save="(content) => { formData['Note'] = content }" @cancel="() => { }"
+                                        @save="content => formData['Note'] = content" 
+                                        @input="content => formData['Note'] = content"
+                                        @cancel="() => {}"
                                         @fileSelectStart="isSelectingFile = true"
                                         @fileSelectEnd="isSelectingFile = false" />
                                 </div>
@@ -656,26 +662,74 @@ const loadData = async () => {
 
 // 格式化日期为北京时间格式
 const formatDateToBeijingTime = (dateInput) => {
-    const date = new Date(dateInput);
-    // 处理日期字符串格式，避免时区问题
-    if (typeof dateInput === 'string' && dateInput.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        // 如果是 YYYY-MM-DD 格式的字符串，直接使用
+    // 如果已经是 YYYY-MM-DD 格式的字符串，直接使用并在后面加上时间
+    if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
         return dateInput + ' 00:00:00';
     }
+    
+    // 如果是带时间的完整日期字符串，直接返回
+    if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(dateInput)) {
+        return dateInput;
+    }
+    
+    // 处理日期对象
+    const date = new Date(dateInput);
+    
     // 使用本地时区而非UTC时间来避免日期偏移问题
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
+    
     // 返回格式化的日期字符串 YYYY-MM-DD 00:00:00
     return `${year}-${month}-${day} 00:00:00`;
+}
+
+// 格式化日期用于显示（只显示年月日）
+const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    
+    // 处理ISO格式日期 (2025-11-25T16:00:00.000Z)
+    if (dateString.includes('T')) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    // 如果是完整的时间格式，只取前面的日期部分
+    if (dateString.includes(' ')) {
+        return dateString.split(' ')[0];
+    }
+    
+    // 如果已经是日期格式，直接返回
+    // 确保返回的格式是 yyyy-MM-dd
+    if (/^\d{4}-\d{2}-\d{2}/.test(dateString)) {
+        return dateString.substring(0, 10);
+    }
+    
+    return dateString;
 }
 
 //后端测试用的提交方法
 const handleSubmit = async () => {
     try {
         if (showEditModal.value) {
-            // 更新数据
-            await updateData(formData.value.id, formData.value)
+            // 更新数据时清理掉Vue的内部属性
+            const cleanData = {};
+            Object.keys(formData.value).forEach(key => {
+                // 过滤掉Vue的内部属性（以_或$开头的属性）
+                if (!key.startsWith('_') && !key.startsWith('$')) {
+                    cleanData[key] = formData.value[key];
+                }
+            });
+            
+            // 特别处理时间字段格式
+            if (cleanData.time) {
+                cleanData.time = formatDateToBeijingTime(cleanData.time);
+            }
+            
+            await updateData(formData.value.id, cleanData)
         } else {
             // 验证支付编码长度
             if (formData.value.pay_id && formData.value.pay_id.length !== 28) {
@@ -720,29 +774,37 @@ const onModalFocusIn = () => {
 // 验证日期
 const validateDate = () => {
     if (!formData.value.time) {
-        dateError.value = '请选择日期'
-        return false
+        dateError.value = '';
+        return;
     }
     
-    const selectedDate = new Date(formData.value.time)
-    const now = new Date()
-    
-    // 重置时间为00:00:00进行比较
-    now.setHours(0, 0, 0, 0)
-    selectedDate.setHours(0, 0, 0, 0)
-    
-    if (selectedDate > now) {
-        dateError.value = '不能选择未来的日期'
-        return false
+    // 检查日期格式
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(formData.value.time)) {
+        dateError.value = '日期格式不正确';
+        return;
     }
     
-    dateError.value = ''
-    return true
+    // 检查日期是否大于今天
+    const selectedDate = new Date(formData.value.time);
+    const today = new Date();
+    
+    // 只比较日期部分，忽略时间部分
+    selectedDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate > today) {
+        dateError.value = '日期不能大于今天';
+        return;
+    }
+    
+    dateError.value = '';
 }
 
 // 在提交前验证日期
 const validateForm = () => {
-    return validateDate()
+    validateDate();
+    return !dateError.value;
 }
 
 // 处理模态框失去焦点
@@ -1454,8 +1516,7 @@ watch(() => props.data, (newData) => {
 .no-data {
   text-align: center;
   padding: 40px 20px;
-  color: #909399;
+  color: #909393;
   font-size: 16px;
 }
-
 </style>

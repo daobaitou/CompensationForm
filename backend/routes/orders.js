@@ -29,7 +29,7 @@ module.exports = function (db) {
       res.json(orders);
     } catch (error) {
       console.error('获取订单失败:', error);
-      res.status(500).json({ error: '获取订单失败' });
+      res.status(500).json({ error: '获取订单失败', details: error.message });
     }
   });
 
@@ -99,36 +99,34 @@ module.exports = function (db) {
       const query = `
       INSERT INTO orders (
         pay_id, complaint_channel, phone, order_amount,
-        situation_explanation, indemnitor, compensation_amount,
-        status, time, note, classification_of_payers, detailed_explanation
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-
-      const [result] = await db.query(query, [
+        situation_explanation, indemnitor, compensation_amount, status, time, note, classification_of_payers, detailed_explanation
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      
+      const values = [
         pay_id, complaint_channel, phone, order_amount,
-        situation_explanation, indemnitor, compensation_amount,
-        status, time, note, classification_of_payers, detailed_explanation
-      ]);
-
-      // 返回前端期望的格式
-      res.status(201).json({
-        id: result.insertId,
-        pay_id,
+        situation_explanation, indemnitor, compensation_amount, status, time, note, classification_of_payers, detailed_explanation
+      ];
+      
+      const [result] = await db.query(query, values);
+      
+      res.status(201).json({ 
+        id: result.insertId, 
+        pay_id, 
         'Complaint channel': complaint_channel,
-        phone,
+        phone, 
         'Order Amount': order_amount,
         'Situation Explanation': situation_explanation,
         Indemnitor: indemnitor,
         'Compensation Amount': compensation_amount,
         status,
-        time: time,  // 使用用户选择的时间而不是当前时间
+        time,
         Note: note,
-        'Classification of Payers': classification_of_payers,   // 新增字段
-        'Detailed explanation': detailed_explanation           // 新增字段
+        'Classification of Payers': classification_of_payers,
+        'Detailed explanation': detailed_explanation
       });
     } catch (error) {
       console.error('添加订单失败:', error);
-      res.status(500).json({ error: '添加订单失败' });
+      res.status(500).json({ error: '添加订单失败', details: error.message });
     }
   });
 
@@ -136,7 +134,6 @@ module.exports = function (db) {
   router.put('/orders/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      // 从前端格式转换为数据库格式
       const {
         pay_id,
         'Complaint channel': complaint_channel,
@@ -148,8 +145,8 @@ module.exports = function (db) {
         status,
         time,
         Note: note,
-        'Classification of Payers': classification_of_payers,  // 新增字段
-        'Detailed explanation': detailed_explanation          // 新增字段
+        'Classification of Payers': classification_of_payers,
+        'Detailed explanation': detailed_explanation
       } = req.body;
       
       // 验证必填字段
@@ -160,61 +157,29 @@ module.exports = function (db) {
       if (!phone || phone.length !== 11) {
         return res.status(400).json({ error: '手机号必须为11位' });
       }
-
-      // 状态映射，将前端状态值映射到数据库枚举值
-      const statusMap = {
-        '需赔付订单': '需赔付订单',
-        '无需赔付订单': '无需赔付订单',
-        '未处理订单/投诉': '未处理订单/投诉',
-        '确认可赔付': '确认可赔付',
-        '确认已赔付': '确认已赔付',
-        '确认无需赔付': '确认无需赔付',
-        '被驳回需赔付订单': '被驳回需赔付订单',
-        '被驳回无需赔付': '被驳回无需赔付'
-      };
-
-      const dbStatus = statusMap[status] || status;
       
-      // 处理日期格式，将ISO格式转换为MySQL DATETIME格式
-      let mysqlTime = time;
-      if (time && typeof time === 'string' && time.includes('T')) {
-        // 将ISO格式(2025-11-23T04:09:20.000Z)转换为MySQL格式(2025-11-23 04:09:20)
-        mysqlTime = time.replace('T', ' ').replace(/\.\d+Z$/, '');
-      }
-
       const query = `
-    UPDATE orders SET
-      pay_id = ?, complaint_channel = ?, phone = ?, order_amount = ?,
-      situation_explanation = ?, indemnitor = ?, compensation_amount = ?,
-      status = ?, time = ?, note = ?, classification_of_payers = ?, detailed_explanation = ?
-    WHERE id = ?
-  `;
-
-      await db.query(query, [
+        UPDATE orders SET 
+          pay_id = ?, complaint_channel = ?, phone = ?, order_amount = ?,
+          situation_explanation = ?, indemnitor = ?, compensation_amount = ?, 
+          status = ?, time = ?, note = ?, classification_of_payers = ?, detailed_explanation = ?
+        WHERE id = ?`;
+      
+      const values = [
         pay_id, complaint_channel, phone, order_amount,
-        situation_explanation, indemnitor, compensation_amount,
-        dbStatus, mysqlTime, note, classification_of_payers, detailed_explanation, id
-      ]);
-
-      // 返回前端期望的格式
-      res.json({
-        id: parseInt(id),
-        pay_id,
-        'Complaint channel': complaint_channel,
-        phone,
-        'Order Amount': order_amount,
-        'Situation Explanation': situation_explanation,
-        Indemnitor: indemnitor,
-        'Compensation Amount': compensation_amount,
-        status,
-        time: mysqlTime,  // 使用转换后的MySQL时间格式
-        Note: note,
-        'Classification of Payers': classification_of_payers,   // 新增字段
-        'Detailed explanation': detailed_explanation           // 新增字段
-      });
+        situation_explanation, indemnitor, compensation_amount, status, time, note, classification_of_payers, detailed_explanation, id
+      ];
+      
+      const [result] = await db.query(query, values);
+      
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: '订单未找到' });
+      }
+      
+      res.json({ message: '订单更新成功' });
     } catch (error) {
       console.error('更新订单失败:', error);
-      res.status(500).json({ error: '更新订单失败' });
+      res.status(500).json({ error: '更新订单失败', details: error.message });
     }
   });
 
@@ -222,11 +187,18 @@ module.exports = function (db) {
   router.delete('/orders/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      await db.query('DELETE FROM orders WHERE id = ?', [id]);
+      
+      const query = 'DELETE FROM orders WHERE id = ?';
+      const [result] = await db.query(query, [id]);
+      
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: '订单未找到' });
+      }
+      
       res.json({ message: '订单删除成功' });
     } catch (error) {
       console.error('删除订单失败:', error);
-      res.status(500).json({ error: '删除订单失败' });
+      res.status(500).json({ error: '删除订单失败', details: error.message });
     }
   });
 

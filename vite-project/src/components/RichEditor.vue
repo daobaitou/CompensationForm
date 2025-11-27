@@ -79,6 +79,8 @@ const onBlur = () => {
 
 const onContentChange = () => {
   currentContent.value = editorContent.value.innerHTML
+  // 实时触发input事件，让父组件能及时获取内容更新
+  emit('input', editorContent.value.innerHTML)
 }
 
 const addText = () => {
