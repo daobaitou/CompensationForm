@@ -9,6 +9,8 @@ import ConfirmedNoCompensationOrders from '../components/ConfirmedNoCompensation
 import NeedCompensationOrders from '../components/NeedCompensationOrders.vue'
 import NoCompensationOrders from '../components/NoCompensationOrders.vue'
 import ConfirmedPaymentOrders from '../components/ConfirmedPaymentOrders.vue'
+import PendingReviewOrders from '../components/PendingReviewOrders.vue'
+import CompletedOrders from '../components/CompletedOrders.vue'
 
 const routes = [
   {
@@ -42,6 +44,14 @@ const routes = [
   {
     path: '/compensation/confirmed-payment',
     component: ConfirmedPaymentOrders
+  },
+  {
+    path: '/compensation/pending-review',
+    component: PendingReviewOrders
+  },
+  {
+    path: '/compensation/completed',
+    component: CompletedOrders
   },
   {
     path: '/statistics/daily',

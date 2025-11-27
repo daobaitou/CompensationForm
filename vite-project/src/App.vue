@@ -46,11 +46,12 @@ const tabs = [
   // 待判责订单：直接作为一级菜单
   { path: '/compensation/basic', title: '待判责订单' },
   
-  // 待审核订单：有 children
+  // 待审核订单：有 children 和一个总的页面
   {
     title: '待审核订单',
-    path: '', // 路径为空，点击不跳转
+    path: '/compensation/pending-review', 
     children: [
+      // { path: '/compensation/pending-review', title: '全部待审核订单' },
       { path: '/compensation/need-compensation', title: '需赔付订单' },
       { path: '/compensation/no-compensation', title: '无需赔付订单' }
     ]
@@ -59,10 +60,12 @@ const tabs = [
   // 待赔付订单：直接作为一级菜单
   { path: '/compensation/confirmed-payment', title: '待赔付订单' },
   
+  // 已完成订单：有 children 和一个总的页面
   {
     title: '已完成订单',
-    path: '', // 路径为空，点击不跳转
+    path: '/compensation/completed', // 路径为空，点击不跳转
     children: [
+      // { path: '/compensation/completed', title: '全部已完成订单' },
       { path: '/compensation/compensated', title: '已赔付订单' },
       { path: '/compensation/confirmed-no-compensation', title: '无需赔付订单' }
     ]
@@ -99,7 +102,7 @@ const tabs = [
   color: #303133;
   text-decoration: none;
   border-radius: 4px;
-  transition: all 0.3s;
+  transition: background-color 0.3s;
   margin-bottom: 10px;
   cursor: pointer;
 }
@@ -111,15 +114,15 @@ const tabs = [
 }
 
 /* 悬停效果 */
-.menu-title:hover {
-  background-color: #e1e4e8;
+.menu-title:hover:not(.has-children) {
+  background-color: #e1e5eb;
 }
 
 /* 子菜单容器 */
 .sub-menu {
+  margin-top: 5px;
   padding-left: 10px;
   border-left: 2px solid #dcdfe6;
-  margin-left: 5px;
 }
 
 /* 子菜单项样式 */
@@ -129,20 +132,20 @@ const tabs = [
   color: #606266;
   text-decoration: none;
   border-radius: 4px;
-  transition: all 0.3s;
+  transition: background-color 0.3s;
   margin-bottom: 5px;
   font-size: 14px;
 }
 
 .menu-item:hover,
 .menu-item.router-link-exact-active {
-  background-color: #e1e4e8;
-  color: #303133;
+  background-color: #e1e5eb;
+  color: #409eff;
 }
 
 .content {
   flex: 1;
   padding: 20px;
-  background-color: #f0f2f5;
+  background-color: #fff;
 }
 </style>

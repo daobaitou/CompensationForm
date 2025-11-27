@@ -8,10 +8,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import DataTable from './DataTable.vue'
 import { useReportStore } from '../stores/report'
-import { fetchData } from '../services/dataService'
+import { fetchData, OrderStatus } from '../services/dataService'
 
 
 const reportStore = useReportStore()
@@ -29,14 +29,21 @@ const columns = [
   { key: 'Note', title: '备注' }
 ]
 
-const tableData = ref([])
+const allTableData = ref([])
+const tableData = computed(() => {
+  // 过滤掉"确认已赔付"和"确认无需赔付"状态的订单
+  return allTableData.value.filter(item => 
+    item.status !== OrderStatus.COMPENSATED && 
+    item.status !== OrderStatus.CONFIRMED_NO_COMPENSATION
+  )
+})
 
 onMounted(async () => {
   try {
     console.log('开始获取所有数据...');
-    tableData.value = await fetchData();
-    console.log('获取到的数据:', tableData.value);
-    console.log('数据总数:', tableData.value.length);
+    allTableData.value = await fetchData();
+    console.log('获取到的数据:', allTableData.value);
+    console.log('数据总数:', allTableData.value.length);
     
   } catch (error) {
     console.error('获取数据失败:', error);
