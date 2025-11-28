@@ -632,8 +632,15 @@ const handleSearch = () => {
 
 
 const handleEdit = (item) => {
-    formData.value = { ...item }
-    showEditModal.value = true
+    const formattedItem = { ...item };
+    
+    // 特别处理日期字段，确保它是一个 YYYY-MM-DD 格式的字符串
+    if (formattedItem.time) {
+        formattedItem.time = formatDateForDisplay(formattedItem.time);
+    }
+    
+    formData.value = formattedItem;
+    showEditModal.value = true;
 }
 
 //后端测试用的删除方法

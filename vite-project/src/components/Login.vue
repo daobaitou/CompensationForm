@@ -9,13 +9,33 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { login } from '~/api/manager'
 
 const router = useRouter()
 
-onMounted(() => {
-  // 自动跳转到主页
-  router.replace('/')
-})
+const onSubmit = () => {
+  formref.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        const response = await login({
+          username: form.username,
+          password: form.password
+        })
+        console.log('登录成功:', response)
+        router.push('/') // 登录成功后跳转到主页
+      } catch (error) {
+        console.error('登录失败:', error)
+      }
+    } else {
+      console.log('表单验证失败')
+    }
+  })    
+}
+
+// onMounted(() => {
+//   // 自动跳转到主页
+//   router.replace('/')
+// })
 </script>
 
 <style scoped>
