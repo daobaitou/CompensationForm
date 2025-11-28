@@ -1,7 +1,19 @@
 <template>
   <div class="app-container">
-    <!-- 左侧菜单 -->
-    <div class="sidebar">
+    <!-- 左侧菜单（除了登录页都显示）-->
+    <div v-if="!isLoginPage" class="sidebar">
+      <div class="user-info"v-if="authStore.user">
+        <div class="username">{{ authStore.user?.username }}</div>
+        <el-button 
+          type="danger" 
+          size="small" 
+          @click="handleLogout"
+          class="logout-btn"
+        >
+          登出
+        </el-button>
+      </div>
+
       <div v-for="(tab, index) in tabs" :key="index" class="menu-group">
         
         <!-- 
@@ -39,6 +51,39 @@
 </template>
 
 <script setup>
+import { computed ,ref, onBeforeUnmount} from 'vue'
+import { useRouter, useRoute} from 'vue-router'
+import { useAuthStore } from './stores/auth'
+import { ElMessageBox, ElMessage } from 'element-plus'
+
+const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
+
+// 判断是否为登录页面
+const isLoginPage = computed(() => route.path === '/login')
+
+const handleLogout = async () => {
+  try {
+    await ElMessageBox.confirm('确定要登出吗？', '确认登出', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    
+    await authStore.logout()
+    ElMessage.success('登出成功')
+    router.push('/login')
+  } catch (error) {
+    if (error === 'cancel') {
+      // 用户取消登出
+      return
+    }
+    ElMessage.error('登出失败')
+  }
+}
+
+
 const tabs = [
   // 投诉订单：直接作为一级菜单
   { path: '/compensation/Complaint', title: '投诉订单' },
@@ -83,6 +128,24 @@ const tabs = [
   width: 200px;
   background-color: #f5f7fa;
   padding: 20px 0; /* 上下内边距，左右为0 */
+}
+
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 15px 20px;
+  border-bottom: 1px solid #e4e7ed;
+  margin-bottom: 15px;
+}
+
+.username {
+  font-weight: bold;
+  color: #303133;
+}
+
+.logout-btn {
+  min-width: auto;
 }
 
 .menu-group {
@@ -147,5 +210,9 @@ const tabs = [
   flex: 1;
   padding: 20px;
   background-color: #fff;
+}
+
+.content.full-width {
+  width: 100%;
 }
 </style>

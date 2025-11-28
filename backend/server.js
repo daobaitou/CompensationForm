@@ -5,6 +5,7 @@ const setupDatabase = require('./setup/dbSetup');
 const seedData = require('./setup/seedData');
 const imageRoutes = require('./routes/image'); // 添加图片路由
 const migrateDatabase = require('./setup/migrate');
+const authRoutes = require('./routes/auth'); // 添加认证路由
 
 // 导入数据库配置
 const dbConfig = require('./config/db');
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({limit: '10mb'}));
 app.use('/uploads', express.static('uploads')); // 静态文件服务
+//app.use('/api/auth', authRoutes(dbPool));
 
 // 添加请求日志中间件
 app.use((req, res, next) => {
@@ -64,6 +66,9 @@ async function init() {
     // 插入测试数据
     await seedData(dbPool);
     console.log('测试数据插入完成');
+
+    // 注册认证路由
+    app.use('/api/auth', authRoutes(dbPool));
     
     // 设置路由，传入数据库连接池
     const orderRoutes = require('./routes/orders')(dbPool);

@@ -3,6 +3,9 @@ const API_BASE_URL = '/api'
 // 登录API
 export const login = async (username, password) => {
   try {
+    console.log('发送登录请求到:', `${API_BASE_URL}/auth/login`);
+    console.log('请求数据:', { username, password });
+    
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
@@ -11,10 +14,37 @@ export const login = async (username, password) => {
       body: JSON.stringify({ username, password })
     })
 
+    console.log('服务器响应状态:', response.status);
+    console.log('服务器响应对象:', response);
+    
     const data = await response.json()
+    console.log('服务器响应数据:', data);
 
     if (!response.ok) {
       throw new Error(data.message || '登录失败')
+    }
+
+    return data
+  } catch (error) {
+    console.error('登录请求出错:', error);
+    throw error
+  }
+}
+
+// 登出API
+export const logout = async (token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || '登出失败')
     }
 
     return data

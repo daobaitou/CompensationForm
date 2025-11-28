@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { login as loginApi, verifyToken } from '../services/authService'
+import { login as loginApi, logout as logoutApi, verifyToken } from '../services/authService'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -46,6 +46,24 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async logout() {
+      try {
+        // 如果有token，尝试调用后端登出接口
+        if (this.token) {
+          await logoutApi(this.token)
+        }
+      } catch (error) {
+        // 即使后端登出失败，也要清除本地状态
+        console.error('登出请求失败:', error)
+      } finally {
+        // 清除本地状态
+        this.user = null
+        this.token = null
+        this.isAuthenticated = false
+        localStorage.removeItem('token')
+      }
+    },
+
     async verifyAuth() {
       if (!this.token) {
         this.logout()
@@ -66,13 +84,6 @@ export const useAuthStore = defineStore('auth', {
         this.logout()
         return false
       }
-    },
-
-    logout() {
-      this.user = null
-      this.token = null
-      this.isAuthenticated = false
-      localStorage.removeItem('token')
     },
 
     initializeAuth() {

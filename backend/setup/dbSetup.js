@@ -30,7 +30,47 @@ async function setupDatabase(db) {
     
     await db.query(createTableQuery);
     console.log('数据库表创建成功');
-        // 检查是否需要添加图片存储字段
+
+ // 创建用户表
+ const createUserTableQuery = `
+ CREATE TABLE IF NOT EXISTS users (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   username VARCHAR(50) NOT NULL UNIQUE,
+   password VARCHAR(255) NOT NULL,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ )
+`;
+await db.query(createUserTableQuery);
+console.log('用户表创建成功');
+
+    // 创建权限表
+    const createPermissionsTableQuery = `
+      CREATE TABLE IF NOT EXISTS permissions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(50) NOT NULL UNIQUE
+      )
+    `;
+    
+    await db.query(createPermissionsTableQuery);
+    console.log('权限表创建成功');
+
+        // 创建用户权限关联表
+        const createUserPermissionsTableQuery = `
+        CREATE TABLE IF NOT EXISTS user_permissions (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
+          permission_id INT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE,
+          UNIQUE KEY unique_user_permission (user_id, permission_id)
+        )
+      `;
+      
+      await db.query(createUserPermissionsTableQuery);
+      console.log('用户权限关联表创建成功');
+
+      
+    // 检查是否需要添加图片存储字段
     try {
       await db.query('ALTER TABLE orders ADD COLUMN images JSON');
       console.log('图片存储字段添加成功');
