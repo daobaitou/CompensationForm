@@ -122,12 +122,14 @@ const tabs = [
 .app-container {
   display: flex;
   min-height: 100vh;
+  width: 100%;
 }
 
 .sidebar {
   width: 200px;
   background-color: #f5f7fa;
   padding: 20px 0; /* 上下内边距，左右为0 */
+  flex-shrink: 0;
 }
 
 .user-info {
@@ -159,7 +161,7 @@ const tabs = [
 */
 .menu-title {
   display: block;
-  padding: 10px;
+  padding: 12px 20px;
   font-weight: bold;
   font-size: 16px;
   color: #303133;
@@ -168,6 +170,7 @@ const tabs = [
   transition: background-color 0.3s;
   margin-bottom: 10px;
   cursor: pointer;
+  text-align: left; /* 左对齐 */
 }
 
 /* 有子菜单的标题特殊样式 */
@@ -183,8 +186,9 @@ const tabs = [
 
 /* 子菜单容器 */
 .sub-menu {
+  background: #f5f7fa;
   margin-top: 5px;
-  padding-left: 10px;
+  padding-left: 30px;
   border-left: 2px solid #dcdfe6;
 }
 
@@ -198,6 +202,7 @@ const tabs = [
   transition: background-color 0.3s;
   margin-bottom: 5px;
   font-size: 14px;
+  text-align: left; /* 左对齐 */
 }
 
 .menu-item:hover,
@@ -210,6 +215,8 @@ const tabs = [
   flex: 1;
   padding: 20px;
   background-color: #fff;
+  min-height: calc(100vh - 40px);
+  width: calc(100% - 200px);
 }
 
 .content.full-width {

@@ -64,18 +64,6 @@
             </div>
           </div>
 
-          <!-- 第四行：详细说明 -->
-          <div class="form-group full-width">
-            <label>详细说明:</label>
-            <textarea v-model="processFormData.detailedExplanation" placeholder="请输入详细说明"></textarea>
-          </div>
-
-          <!-- 第五行：备注 -->
-          <div class="form-group full-width">
-            <label>备注:</label>
-            <textarea v-model="processFormData.note" placeholder="请输入备注信息"></textarea>
-          </div>
-
           <div class="form-buttons">
             <button type="button" @click="closeProcessModal" class="cancel-btn">取消</button>
             <button type="submit" class="submit-btn">确定</button>
@@ -278,11 +266,44 @@ const handleProcessSubmit = async () => {
   box-sizing: border-box;
 }
 
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-buttons button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.form-buttons .submit-btn {
+  background-color: #409EFF;
+  color: white;
+}
+
+.form-buttons .cancel-btn {
+  background-color: #f5f7fa;
+  color: #606266;
+}
+
+.form-buttons .submit-btn:hover {
+  background-color: #66b1ff;
+}
+
+.form-buttons .cancel-btn:hover {
+  background-color: #e1e5eb;
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 24px;
 }
 
 .modal-actions button {

@@ -1170,6 +1170,7 @@ watch(() => props.data, (newData) => {
     font-size: 14px;
     color: #606266;
     margin-bottom: 4px;
+    text-align: left;
 }
 
 /* 编辑弹窗中的输入框设置 */

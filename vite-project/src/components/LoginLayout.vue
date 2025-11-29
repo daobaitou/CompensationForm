@@ -14,5 +14,10 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100vw;  /* 确保不会超出视口 */
+  margin: 0 auto;
+  padding: 0;
+  overflow-x: hidden;  /* 防止水平滚动 */
 }
 </style>
