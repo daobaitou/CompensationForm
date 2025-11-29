@@ -14,7 +14,7 @@
         </el-button>
       </div>
 
-      <div v-for="(tab, index) in tabs" :key="index" class="menu-group">
+      <div v-for="(tab, index) in filteredTabs" :key="index" class="menu-group">
         
         <!-- 
           统一使用 router-link 作为一级菜单标题
@@ -114,8 +114,24 @@ const tabs = [
       { path: '/compensation/compensated', title: '已赔付订单' },
       { path: '/compensation/confirmed-no-compensation', title: '无需赔付订单' }
     ]
-  }
+  },
+  // 用户管理：仅超级管理员可见
+  { path: '/system/users', title: '用户管理', adminOnly: true }
 ]
+
+// 过滤菜单项，仅显示当前用户有权访问的菜单
+const filteredTabs = computed(() => {
+  return tabs.filter(tab => {
+    // 如果不是管理员专用菜单项，直接显示
+    if (!tab.adminOnly) {
+      return true
+    }
+    
+    // 如果是管理员专用菜单项，检查用户是否为管理员
+    return authStore.user && authStore.user.role === 'admin'
+  })
+})
+
 </script>
 
 <style scoped>

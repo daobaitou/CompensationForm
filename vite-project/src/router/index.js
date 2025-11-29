@@ -13,6 +13,7 @@ import PendingReviewOrders from '../components/PendingReviewOrders.vue'
 import CompletedOrders from '../components/CompletedOrders.vue'
 import Login from '../components/Login.vue' // 添加导入
 import LoginLayout from '../components/LoginLayout.vue'
+import UserManagement from '../components/UserManagement.vue' // 导入用户管理组件
 import { useAuthStore } from '../stores/auth'
 
 
@@ -74,7 +75,13 @@ const routes = [
   {
     path: '/statistics/monthly',
     component: MonthlyReport
+  },
+  {
+    path: '/system/users',
+    component: UserManagement,
+    meta: { requiresAdmin: true } // 添加管理员权限要求
   }
+
 ]
 
 const router = createRouter({

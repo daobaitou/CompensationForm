@@ -75,7 +75,8 @@ export const verifyToken = async (token) => {
 }
 
 // 获取所有用户
-export const getAllUsers = async (token) => {
+export const getAllUsers = async () => {
+  const token = localStorage.getItem('token');
   const response = await fetch(`${API_BASE_URL}/auth/users`, {
     headers: {
       'Authorization': `Bearer ${token}`
@@ -89,6 +90,68 @@ export const getAllUsers = async (token) => {
   }
 
   return data.users
+}
+
+
+
+// 创建用户
+export const createUser = async (userData) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_BASE_URL}/auth/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(userData)
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message || '创建用户失败')
+  }
+
+  return data
+}
+
+export const updateUser = async (userId, userData) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(userData)
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message || '更新用户失败')
+  }
+
+  return data
+}
+
+// 删除用户
+export const deleteUser = async (userId) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.message || '删除用户失败')
+  }
+
+  return data
 }
 
 // 更新用户权限
