@@ -64,7 +64,12 @@ async function init() {
     console.log('数据库迁移已执行');
 
     // 插入测试数据
-    await seedData(dbPool);
+    const seedModule = require('./setup/seedData');
+    if (typeof seedModule === 'function') {
+      await seedModule(dbPool);
+    } else if (seedModule.seedData) {
+      await seedModule.seedData(dbPool);
+    }
     console.log('测试数据插入完成');
 
     // 注册认证路由

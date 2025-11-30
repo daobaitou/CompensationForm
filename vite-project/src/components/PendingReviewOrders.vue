@@ -7,7 +7,7 @@
       :filterableColumns="['投诉渠道', '赔付人']" 
       :showAddButton="false"
       :showEditButton="false"
-      :showProcessButton="true"
+      :showProcessButton="hasProcessPermission"
       @row-action="handleRowAction" />
     
     <!-- 审核弹窗 - 需赔付订单 -->
@@ -73,7 +73,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import DataTable from './DataTable.vue'
+import { useAuthStore } from '../stores/auth'
 import { fetchData, updateData, OrderStatus } from '../services/dataService'
+
+const authStore = useAuthStore()
 
 const title = '待审核订单'
 const columns = [
@@ -90,6 +93,11 @@ const columns = [
 ]
 
 const tableData = ref([])
+
+// 计算属性：检查用户是否有处理待审核订单权限
+const hasProcessPermission = computed(() => {
+    return authStore.isAdmin || authStore.hasPermission('process_pending_review_order');
+});
 
 // 弹窗相关状态 - 需赔付订单
 const showReviewModalForNeed = ref(false)

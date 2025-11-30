@@ -107,8 +107,13 @@ router.beforeEach(async (to, from, next) => {
 
   // 验证token有效性
   if (authStore.token) {
-    const isValid = await authStore.verifyAuth()
+    const isValid = await authStore.verifyToken()
     if (isValid) {
+      // 检查是否需要管理员权限
+      if (to.meta.requiresAdmin && !authStore.isAdmin) {
+        next('/')
+        return
+      }
       next()
       return
     }

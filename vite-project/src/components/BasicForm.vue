@@ -8,7 +8,7 @@
       :filterableColumns="['投诉渠道', '赔付人']" 
       :showAddButton="false"
       :showEditButton="false"
-      :showProcessButton="true" @row-action="handleRowAction" />
+      :showProcessButton="hasProcessPermission" @row-action="handleRowAction" />
 
     <!-- 处理订单弹窗 -->
     <div v-if="showProcessModal" class="modal" @click="closeProcessModal">
@@ -76,9 +76,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import DataTable from './DataTable.vue'
+import { useAuthStore } from '../stores/auth'
 import { fetchDataByStatus, updateData, OrderStatus } from '../services/dataService'
+
+const authStore = useAuthStore()
 
 const title = '待判责订单'
 const columns = [
@@ -95,6 +98,10 @@ const columns = [
 // 初始化数据
 const tableData = ref([])
 
+// 计算属性：检查用户是否有处理待判责订单权限
+const hasProcessPermission = computed(() => {
+    return authStore.isAdmin || authStore.hasPermission('process_basic_order');
+});
 
 // 处理订单相关状态
 const showProcessModal = ref(false)

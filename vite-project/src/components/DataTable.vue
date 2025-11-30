@@ -56,7 +56,7 @@
 
             </div>
             <!-- 只有在showAddButton为true时才显示添加按钮 -->
-            <button v-if="props.showAddButton" class="add-btn" @click="showAddModal = true">
+            <button v-if="props.showAddButton && hasAddOrderPermission" class="add-btn" @click="showAddModal = true">
                 添加数据
             </button>
         </div>
@@ -89,9 +89,9 @@
                     </td>
                     <td>
                         <div class="actions">
-                            <button v-if="props.showProcessButton" class="process-btn" @click="$emit('row-action', 'process', item)">处理
+                            <button v-if="props.showProcessButton && hasProcessOrderPermission" class="process-btn" @click="$emit('row-action', 'process', item)">处理
                             </button>
-                            <button v-if="props.showEditButton" class="edit-btn" @click="handleEdit(item)">编辑</button>
+                            <button v-if="props.showEditButton && hasEditOrderPermission" class="edit-btn" @click="handleEdit(item)">编辑</button>
                         </div>
                     </td>
                 </tr>
@@ -256,10 +256,13 @@
 import { ref, computed, onMounted, nextTick, watch, onUnmounted} from 'vue'
 import FilterDialog from './FilterDialog.vue'
 import RichEditor from './RichEditor.vue'
+import { useAuthStore } from '../stores/auth'
 
 // 引入新的数据服务方法
 import { fetchData, addData, updateData, deleteData } from '../services/dataService'
 const emit = defineEmits(['save', 'cancel', 'fileSelectStart', 'fileSelectEnd', 'row-action'])
+
+const authStore = useAuthStore()
 
 // 接收外部传入的columns和data
 const props = defineProps({
@@ -292,6 +295,34 @@ const props = defineProps({
         default: false // 默认不启用全字段编辑
     }
 })
+
+// 计算属性：检查用户是否有添加订单权限
+const hasAddOrderPermission = computed(() => {
+    // 超级管理员或有添加订单权限的用户可以添加订单
+    return authStore.isAdmin || authStore.hasPermission('add_order');
+});
+
+// 计算属性：检查用户是否有编辑订单权限
+const hasEditOrderPermission = computed(() => {
+    // 超级管理员或有编辑订单权限的用户可以编辑订单
+    return authStore.isAdmin || authStore.hasPermission('edit_order');
+});
+
+// 计算属性：检查用户是否有处理订单权限
+const hasProcessOrderPermission = computed(() => {
+    // 超级管理员或有相应处理订单权限的用户可以处理订单
+    if (authStore.isAdmin) return true;
+    
+    // 根据不同的处理场景检查对应权限
+    if (props.showProcessButton) {
+        // 这里可以根据路由路径判断需要哪种权限
+        // 简化处理：如果有显示处理按钮，就检查相关权限
+        return authStore.hasPermission('process_basic_order') || 
+               authStore.hasPermission('process_pending_review_order') ||
+               authStore.hasPermission('process_payment_order');
+    }
+    return false;
+});
 
 // 响应式数据
 const tableData = ref([])

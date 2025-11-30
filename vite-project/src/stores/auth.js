@@ -10,15 +10,39 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     hasPermission: (state) => (permission) => {
+      // 超级管理员拥有所有权限
+      if (state.user && state.user.role === 'admin') {
+        return true;
+      }
       return state.user?.permissions?.includes(permission) || false
     },
     hasAnyPermission: (state) => (permissions) => {
+      // 超级管理员拥有所有权限
+      if (state.user && state.user.role === 'admin') {
+        return true;
+      }
       return permissions.some(permission => 
         state.user?.permissions?.includes(permission)
       )
     },
     getUserPermissions: (state) => {
+      // 超级管理员拥有所有权限
+      if (state.user && state.user.role === 'admin') {
+        return [
+          'add_order',
+          'edit_order', 
+          'process_basic_order',
+          'process_pending_review_order',
+          'process_payment_order',
+          'manage_users',
+          'manage_permissions',
+          'view_reports'
+        ];
+      }
       return state.user?.permissions || []
+    },
+    isAdmin: (state) => {
+      return state.user && state.user.role === 'admin';
     }
   },
 
@@ -46,25 +70,14 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async logout() {
-      try {
-        // 如果有token，尝试调用后端登出接口
-        if (this.token) {
-          await logoutApi(this.token)
-        }
-      } catch (error) {
-        // 即使后端登出失败，也要清除本地状态
-        console.error('登出请求失败:', error)
-      } finally {
-        // 清除本地状态
-        this.user = null
-        this.token = null
-        this.isAuthenticated = false
-        localStorage.removeItem('token')
-      }
+    logout() {
+      this.user = null
+      this.token = null
+      this.isAuthenticated = false
+      localStorage.removeItem('token')
     },
 
-    async verifyAuth() {
+    async verifyToken() {
       if (!this.token) {
         this.logout()
         return false

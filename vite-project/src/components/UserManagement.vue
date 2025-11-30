@@ -36,7 +36,7 @@
     <el-dialog 
       :title="dialogTitle" 
       v-model="dialogVisible" 
-      width="500px"
+      width="600px"
       @close="resetForm"
     >
       <el-form :model="currentUser" :rules="rules" ref="userFormRef" label-width="100px">
@@ -50,10 +50,28 @@
           <el-input v-model="currentUser.confirmPassword" type="password" show-password></el-input>
         </el-form-item>
         <el-form-item label="角色" prop="role">
-          <el-select v-model="currentUser.role" placeholder="请选择角色">
+          <el-select v-model="currentUser.role" placeholder="请选择角色" @change="handleRoleChange">
             <el-option label="超级管理员" value="admin"></el-option>
             <el-option label="普通用户" value="user"></el-option>
           </el-select>
+        </el-form-item>
+        
+        <!-- 权限选择（仅对普通用户显示） -->
+        <el-form-item label="权限" v-if="currentUser.role === 'user'">
+          <el-checkbox-group v-model="currentUser.permissions">
+            <el-tooltip 
+              v-for="permission in availablePermissions" 
+              :key="permission.value" 
+              :content="permission.description"
+              placement="top"
+            >
+              <el-checkbox 
+                :label="permission.value"
+              >
+                {{ permission.label }}
+              </el-checkbox>
+            </el-tooltip>
+          </el-checkbox-group>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -69,11 +87,60 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getAllUsers, createUser, updateUser, deleteUser as deleteUserApi } from '../services/authService'
+import { getAllUsers, createUser, updateUser, deleteUser as deleteUserApi, getAllPermissions } from '../services/authService'
 
 // 用户数据
 const users = ref([])
 const loading = ref(false)
+
+// 权限数据
+const availablePermissions = ref([
+  { value: 'add_order', label: '添加订单', description: '允许用户在投诉订单页面添加新的订单记录' },
+  { value: 'edit_order', label: '编辑订单', description: '允许用户在投诉订单页面编辑现有订单信息' },
+  { value: 'process_basic_order', label: '处理待判责订单', description: '允许用户在待判责订单页面处理订单，判定责任方' },
+  { value: 'process_pending_review_order', label: '处理待审核订单', description: '允许用户在待审核订单页面审核订单，决定是否赔付' },
+  { value: 'process_payment_order', label: '赔付订单', description: '允许用户在待赔付订单页面执行实际的赔付操作' },
+  { value: 'manage_orders', label: '管理订单', description: '允许用户查看和管理所有订单信息' },
+  { value: 'manage_users', label: '管理用户', description: '允许用户管理系统中的其他用户账户' },
+  { value: 'manage_permissions', label: '管理权限', description: '允许用户管理权限分配，给其他用户分配权限' },
+  { value: 'view_reports', label: '查看报表', description: '允许用户访问和查看各类统计报表' }
+])
+
+// 权限标签映射
+const permissionLabels = {
+  'add_order': '添加订单',
+  'edit_order': '编辑订单',
+  'process_basic_order': '处理待判责订单',
+  'process_pending_review_order': '处理待审核订单',
+  'process_payment_order': '赔付订单',
+  'manage_orders': '管理订单',
+  'manage_users': '管理用户',
+  'manage_permissions': '管理权限',
+  'view_reports': '查看报表'
+}
+
+// 权限描述映射
+const permissionDescriptions = {
+  'add_order': '允许用户在投诉订单页面添加新的订单记录',
+  'edit_order': '允许用户在投诉订单页面编辑现有订单信息',
+  'process_basic_order': '允许用户在待判责订单页面处理订单，判定责任方',
+  'process_pending_review_order': '允许用户在待审核订单页面审核订单，决定是否赔付',
+  'process_payment_order': '允许用户在待赔付订单页面执行实际的赔付操作',
+  'manage_orders': '允许用户查看和管理所有订单信息',
+  'manage_users': '允许用户管理系统中的其他用户账户',
+  'manage_permissions': '允许用户管理权限分配，给其他用户分配权限',
+  'view_reports': '允许用户访问和查看各类统计报表'
+}
+
+// 获取权限标签的函数
+const getPermissionLabel = (permissionValue) => {
+  return permissionLabels[permissionValue] || permissionValue
+}
+
+// 获取权限描述的函数
+const getPermissionDescription = (permissionValue) => {
+  return permissionDescriptions[permissionValue] || ''
+}
 
 // 对话框相关
 const dialogVisible = ref(false)
@@ -86,7 +153,8 @@ const currentUser = reactive({
   username: '',
   password: '',
   confirmPassword: '',
-  role: 'user'
+  role: 'user',
+  permissions: []
 })
 
 // 表单验证规则
@@ -116,6 +184,7 @@ const rules = {
   ]
 }
 
+
 // 计算超级管理员数量
 const adminCount = computed(() => {
   return users.value.filter(user => user.role === 'admin').length
@@ -137,17 +206,55 @@ const fetchUsers = async () => {
   }
 }
 
+// 获取所有权限
+const fetchPermissions = async () => {
+  try {
+    const data = await getAllPermissions()
+    // 更新权限列表，保持中文标签和描述
+    availablePermissions.value = data.map(permission => ({
+      value: permission.name,
+      label: permissionLabels[permission.name] || permission.description || permission.name,
+      description: permissionDescriptions[permission.name] || permission.description || ''
+    }))
+  } catch (error) {
+    console.error('获取权限列表失败:', error)
+    // 出错时使用默认权限列表
+  }
+}
+
 // 打开添加用户对话框
 const openAddUserDialog = () => {
   isEditMode.value = false
+  resetForm()
   dialogVisible.value = true
 }
 
 // 打开编辑用户对话框
 const openEditUserDialog = (user) => {
   isEditMode.value = true
-  Object.assign(currentUser, user)
+  Object.assign(currentUser, {
+    id: user.id,
+    username: user.username,
+    password: '',
+    confirmPassword: '',
+    role: user.role,
+    permissions: user.permissions && Array.isArray(user.permissions) ? [...user.permissions] : []
+  })
+  console.log('编辑用户权限:', currentUser.permissions) // 调试日志
   dialogVisible.value = true
+}
+
+// 处理角色变更
+const handleRoleChange = (role) => {
+  const previousRole = currentUser.role
+  
+  // 如果切换为管理员，清空权限选择
+  if (role === 'admin') {
+    currentUser.permissions = []
+  }
+  
+  // 如果从管理员切换回普通用户，保留之前的权限或初始化为空数组
+  // 注意：在编辑模式下，原始权限已在openEditUserDialog中保存
 }
 
 // 重置表单
@@ -157,7 +264,8 @@ const resetForm = () => {
     username: '',
     password: '',
     confirmPassword: '',
-    role: 'user'
+    role: 'user',
+    permissions: []
   })
   
   if (userFormRef.value) {
@@ -174,7 +282,8 @@ const submitUser = () => {
       if (isEditMode.value) {
         // 编辑用户
         await updateUser(currentUser.id, {
-          role: currentUser.role
+          role: currentUser.role,
+          permissions: currentUser.role === 'user' ? currentUser.permissions : []
         })
         ElMessage.success('用户更新成功')
       } else {
@@ -182,7 +291,8 @@ const submitUser = () => {
         await createUser({
           username: currentUser.username,
           password: currentUser.password,
-          role: currentUser.role
+          role: currentUser.role,
+          permissions: currentUser.role === 'user' ? currentUser.permissions : []
         })
         ElMessage.success('用户添加成功')
       }
@@ -215,9 +325,10 @@ const deleteUser = (id) => {
   })
 }
 
-// 组件挂载时获取用户列表
+// 组件挂载时获取用户列表和权限列表
 onMounted(() => {
   fetchUsers()
+  fetchPermissions()
 })
 </script>
 
@@ -233,5 +344,11 @@ onMounted(() => {
 
 .dialog-footer {
   text-align: right;
+}
+
+.el-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 </style>

@@ -7,7 +7,7 @@
       :filterableColumns="['投诉渠道', '赔付人']" 
       :showAddButton="false"
       :showEditButton="false"
-      :showProcessButton="true"
+      :showProcessButton="hasProcessPermission"
       @row-action="handleRowAction" />
     
     <!-- 赔付弹窗 -->
@@ -43,8 +43,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import DataTable from './DataTable.vue'
-import { fetchData, updateData } from '../services/dataService'
-import { OrderStatus } from '../services/dataService'
+import { useAuthStore } from '../stores/auth'
+import { fetchData, updateData, OrderStatus } from '../services/dataService'
+
+const authStore = useAuthStore()
 
 const title = '待赔付订单'
 const columns = [
@@ -68,6 +70,12 @@ const compensationFormData = ref({
   indemnitor: '',
   compensationAmount: 0
 })
+
+
+// 计算属性：检查用户是否有赔付订单权限
+const hasProcessPermission = computed(() => {
+    return authStore.isAdmin || authStore.hasPermission('process_payment_order');
+});
 
 // 过滤数据以显示"确认可赔付"状态的订单
 const filteredTableData = computed(() => {

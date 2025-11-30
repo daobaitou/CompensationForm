@@ -175,7 +175,8 @@ export const updateUserPermissions = async (token, userId, permissions) => {
 }
 
 // 获取所有权限
-export const getAllPermissions = async (token) => {
+export const getAllPermissions = async () => {
+  const token = localStorage.getItem('token');
   const response = await fetch(`${API_BASE_URL}/auth/permissions`, {
     headers: {
       'Authorization': `Bearer ${token}`
@@ -188,5 +189,24 @@ export const getAllPermissions = async (token) => {
     throw new Error(data.message || '获取权限失败')
   }
 
-  return data.permissions
+  // 返回标准格式的权限列表
+  if (Array.isArray(data.permissions)) {
+    return data.permissions.map(permission => {
+      return { 
+        name: permission.name, 
+        description: permission.name 
+      };
+    });
+  }
+
+  return [
+    { name: 'add_order', description: '添加订单' },
+    { name: 'edit_order', description: '编辑订单' },
+    { name: 'process_basic_order', description: '处理待判责订单' },
+    { name: 'process_pending_review_order', description: '处理待审核订单' },
+    { name: 'process_payment_order', description: '赔付订单' },
+    { name: 'manage_users', description: '管理用户' },
+    { name: 'manage_permissions', description: '管理权限' },
+    { name: 'view_reports', description: '查看报表' }
+  ];
 }

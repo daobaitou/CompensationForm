@@ -121,9 +121,23 @@ async function seedData(db) {
     console.log('现有权限数:', existingPermissions[0].count);
     if (existingPermissions[0].count === 0) {
       console.log('开始插入默认权限...');
-      const permissions = ['manage_orders', 'manage_users', 'manage_permissions', 'view_reports'];
+      // 更新权限定义，添加具体的业务权限
+      const permissions = [
+        { name: 'add_order', description: '添加订单' },
+        { name: 'edit_order', description: '编辑订单' },
+        { name: 'process_basic_order', description: '处理待判责订单' },
+        { name: 'process_pending_review_order', description: '处理待审核订单' },
+        { name: 'process_payment_order', description: '赔付订单' },
+        { name: 'manage_users', description: '管理用户' },
+        { name: 'manage_permissions', description: '管理权限' },
+        { name: 'view_reports', description: '查看报表' }
+      ];
+      
       for (const permission of permissions) {
-        await db.query('INSERT INTO permissions (name) VALUES (?)', [permission]);
+        await db.query(
+          'INSERT INTO permissions (name, description) VALUES (?, ?)', 
+          [permission.name, permission.description]
+        );
       }
       console.log('默认权限插入完成');
     }
@@ -159,4 +173,118 @@ async function seedData(db) {
   }
 }
 
-module.exports = seedData;
+const promisePool = require('../config/db');
+
+// 插入初始权限数据
+async function seedPermissions() {
+  const permissions = [
+    'manage_orders',       // 管理订单权限
+    'add_order',           // 添加订单权限
+    'edit_order',          // 编辑订单权限
+    'process_basic_order', // 处理待判责订单权限
+    'process_pending_review_order', // 处理待审核订单权限
+    'process_payment_order',        // 赔付订单权限
+    'manage_users',        // 管理用户权限
+    'manage_permissions',  // 管理权限权限
+    'view_reports'         // 查看报表权限
+  ];
+
+  try {
+    // 检查是否已存在权限数据
+    const [existingPermissions] = await promisePool.query('SELECT COUNT(*) as count FROM permissions');
+    
+    if (existingPermissions[0].count > 0) {
+      console.log('权限数据已存在，跳过插入');
+      return;
+    }
+
+    // 插入权限数据
+    for (const permission of permissions) {
+      await promisePool.query('INSERT INTO permissions (name) VALUES (?)', [permission]);
+    }
+    
+    console.log('权限数据插入成功');
+  } catch (error) {
+    console.error('插入权限数据时出错:', error);
+  }
+}
+
+// 插入初始用户数据
+async function seedUsers() {
+  const users = [
+    { username: 'admin', password: 'admin123', role: 'user' },
+    { username: 'superadmin', password: 'superadmin123', role: 'admin' }
+  ];
+
+  try {
+    // 检查是否已存在用户数据
+    const [existingUsers] = await promisePool.query('SELECT COUNT(*) as count FROM users');
+    
+    if (existingUsers[0].count > 0) {
+      console.log('用户数据已存在，跳过插入');
+      return;
+    }
+
+    // 插入用户数据
+    for (const user of users) {
+      await promisePool.query(
+        'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+        [user.username, user.password, user.role]
+      );
+    }
+    
+    console.log('用户数据插入成功');
+  } catch (error) {
+    console.error('插入用户数据时出错:', error);
+  }
+}
+
+// 为管理员用户分配所有权限
+async function assignAdminPermissions() {
+  try {
+    // 获取管理员用户
+    const [adminUsers] = await promisePool.query(
+      'SELECT id FROM users WHERE username = ? AND role = ?', 
+      ['superadmin', 'admin']
+    );
+    
+    if (adminUsers.length === 0) {
+      console.log('未找到管理员用户，跳过权限分配');
+      return;
+    }
+    
+    const adminUserId = adminUsers[0].id;
+    
+    // 获取所有权限
+    const [permissions] = await promisePool.query('SELECT id FROM permissions');
+    
+    // 检查是否已分配权限
+    const [existingPermissions] = await promisePool.query(
+      'SELECT COUNT(*) as count FROM user_permissions WHERE user_id = ?',
+      [adminUserId]
+    );
+    
+    if (existingPermissions[0].count > 0) {
+      console.log('管理员权限已分配，跳过分配');
+      return;
+    }
+    
+    // 为管理员用户分配所有权限
+    for (const permission of permissions) {
+      await promisePool.query(
+        'INSERT INTO user_permissions (user_id, permission_id) VALUES (?, ?)',
+        [adminUserId, permission.id]
+      );
+    }
+    
+    console.log('管理员权限分配成功');
+  } catch (error) {
+    console.error('分配管理员权限时出错:', error);
+  }
+}
+
+module.exports = {
+  seedPermissions,
+  seedUsers,
+  assignAdminPermissions
+};
