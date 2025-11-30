@@ -82,3 +82,1367 @@ JWT令牌生成成功
 2025-11-30T07:12:43.983Z - GET /api/auth/verify
 2025-11-30T07:12:44.000Z - GET /api/auth/users
 2025-11-30T07:12:44.001Z - GET /api/auth/permissions
+2025-11-30T07:14:58.284Z - GET /api/auth/verify
+2025-11-30T07:14:58.311Z - GET /api/auth/users
+2025-11-30T07:14:58.312Z - GET /api/auth/permissions
+2025-11-30T07:53:34.897Z - GET /api/auth/verify
+2025-11-30T07:53:34.921Z - GET /api/orders
+2025-11-30T07:53:34.922Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:53:35.263Z - GET /api/auth/verify
+2025-11-30T07:53:35.275Z - GET /api/orders
+2025-11-30T07:53:35.277Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:53:35.813Z - GET /api/auth/verify
+2025-11-30T07:53:35.827Z - GET /api/orders
+2025-11-30T07:53:35.828Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:53:36.664Z - GET /api/auth/verify
+2025-11-30T07:53:36.679Z - GET /api/orders
+2025-11-30T07:53:36.681Z - GET /api/orders
+2025-11-30T07:53:37.080Z - GET /api/auth/verify
+2025-11-30T07:53:37.094Z - GET /api/orders
+2025-11-30T07:53:37.095Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T07:53:37.531Z - GET /api/auth/verify
+2025-11-30T07:53:37.547Z - GET /api/orders
+2025-11-30T07:53:37.549Z - GET /api/orders
+2025-11-30T07:53:37.914Z - GET /api/auth/verify
+2025-11-30T07:53:37.928Z - GET /api/orders
+2025-11-30T07:53:37.928Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T07:53:38.547Z - GET /api/auth/verify
+2025-11-30T07:53:38.558Z - GET /api/orders
+2025-11-30T07:53:38.558Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:53:39.180Z - GET /api/auth/verify
+2025-11-30T07:53:39.191Z - GET /api/orders
+2025-11-30T07:53:39.191Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:53:40.346Z - GET /api/auth/verify
+2025-11-30T07:53:40.363Z - GET /api/auth/users
+2025-11-30T07:53:40.363Z - GET /api/auth/permissions
+2025-11-30T07:53:40.930Z - GET /api/auth/verify
+2025-11-30T07:53:40.943Z - GET /api/orders
+2025-11-30T07:53:40.944Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:53:41.281Z - GET /api/auth/verify
+2025-11-30T07:53:41.293Z - GET /api/orders
+2025-11-30T07:53:41.294Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:53:41.796Z - GET /api/auth/verify
+2025-11-30T07:53:41.809Z - GET /api/auth/users
+2025-11-30T07:53:41.809Z - GET /api/auth/permissions
+2025-11-30T07:53:46.867Z - DELETE /api/auth/users/4
+404 Not Found: DELETE /api/auth/users/4
+2025-11-30T07:53:54.515Z - DELETE /api/auth/users/3
+404 Not Found: DELETE /api/auth/users/3
+2025-11-30T07:53:57.045Z - GET /api/auth/verify
+2025-11-30T07:53:57.065Z - GET /api/auth/users
+2025-11-30T07:53:57.066Z - GET /api/auth/permissions
+2025-11-30T07:54:01.831Z - DELETE /api/auth/users/3
+404 Not Found: DELETE /api/auth/users/3
+2025-11-30T07:54:11.166Z - DELETE /api/auth/users/4
+404 Not Found: DELETE /api/auth/users/4
+2025-11-30T07:55:22.407Z - GET /api/auth/verify
+2025-11-30T07:55:22.431Z - GET /api/auth/users
+2025-11-30T07:55:22.431Z - GET /api/auth/permissions
+2025-11-30T07:55:43.755Z - GET /api/auth/verify
+2025-11-30T07:55:43.811Z - GET /api/orders
+2025-11-30T07:55:43.813Z - GET /api/orders
+2025-11-30T07:55:50.554Z - GET /api/auth/verify
+2025-11-30T07:55:50.576Z - GET /api/auth/users
+2025-11-30T07:55:50.576Z - GET /api/auth/permissions
+2025-11-30T07:55:52.367Z - GET /api/auth/verify
+2025-11-30T07:55:52.388Z - GET /api/auth/users
+2025-11-30T07:55:52.389Z - GET /api/auth/permissions
+2025-11-30T07:55:53.254Z - GET /api/auth/verify
+2025-11-30T07:55:53.270Z - GET /api/orders
+2025-11-30T07:55:53.272Z - GET /api/orders
+2025-11-30T07:55:53.754Z - GET /api/auth/verify
+2025-11-30T07:55:53.769Z - GET /api/orders
+2025-11-30T07:55:53.771Z - GET /api/orders
+2025-11-30T07:55:55.503Z - GET /api/auth/verify
+2025-11-30T07:55:55.521Z - GET /api/orders
+2025-11-30T07:55:55.522Z - GET /api/orders/status/%E6%9C%AA%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95_SLASH_%E6%8A%95%E8%AF%89
+请求的状态: 未处理订单_SLASH_投诉 解码后的状态: 未处理订单/投诉
+根据状态查询到的数据条数: 1
+查询结果: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    complaint_channel: '在线客服',
+    phone: '13900139000',
+    order_amount: '200.00',
+    situation_explanation: '物流延迟',
+    indemnitor: '李四',
+    compensation_amount: '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '补偿运费',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    'Complaint channel': '在线客服',
+    phone: '13900139000',
+    'Order Amount': '200.00',
+    'Situation Explanation': '物流延迟',
+    Indemnitor: '李四',
+    'Compensation Amount': '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '补偿运费'
+  }
+]
+2025-11-30T07:55:55.531Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 被驳回需赔付订单 解码后的状态: 被驳回需赔付订单
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:55:55.540Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 被驳回无需赔付 解码后的状态: 被驳回无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:55:56.173Z - GET /api/auth/verify
+2025-11-30T07:55:56.190Z - GET /api/orders
+2025-11-30T07:55:56.194Z - GET /api/orders
+2025-11-30T07:55:58.103Z - GET /api/auth/verify
+2025-11-30T07:55:58.121Z - GET /api/auth/users
+2025-11-30T07:55:58.122Z - GET /api/auth/permissions
+2025-11-30T07:55:59.820Z - GET /api/auth/verify
+2025-11-30T07:55:59.840Z - GET /api/orders
+2025-11-30T07:55:59.840Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T07:56:00.953Z - GET /api/auth/verify
+2025-11-30T07:56:00.973Z - GET /api/orders
+2025-11-30T07:56:00.974Z - GET /api/orders/status/%E6%9C%AA%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95_SLASH_%E6%8A%95%E8%AF%89
+请求的状态: 未处理订单_SLASH_投诉 解码后的状态: 未处理订单/投诉
+根据状态查询到的数据条数: 1
+查询结果: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    complaint_channel: '在线客服',
+    phone: '13900139000',
+    order_amount: '200.00',
+    situation_explanation: '物流延迟',
+    indemnitor: '李四',
+    compensation_amount: '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '补偿运费',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    'Complaint channel': '在线客服',
+    phone: '13900139000',
+    'Order Amount': '200.00',
+    'Situation Explanation': '物流延迟',
+    Indemnitor: '李四',
+    'Compensation Amount': '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '补偿运费'
+  }
+]
+2025-11-30T07:56:00.979Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 被驳回需赔付订单 解码后的状态: 被驳回需赔付订单
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:56:00.982Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 被驳回无需赔付 解码后的状态: 被驳回无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:25.215Z - GET /api/auth/verify
+2025-11-30T07:57:25.238Z - GET /api/auth/users
+2025-11-30T07:57:25.238Z - GET /api/auth/permissions
+2025-11-30T07:57:26.639Z - GET /api/auth/verify
+2025-11-30T07:57:26.682Z - GET /api/orders
+2025-11-30T07:57:26.685Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:27.128Z - GET /api/auth/verify
+2025-11-30T07:57:27.139Z - GET /api/orders
+2025-11-30T07:57:27.139Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:27.793Z - GET /api/auth/verify
+2025-11-30T07:57:27.841Z - GET /api/auth/users
+2025-11-30T07:57:27.842Z - GET /api/auth/permissions
+2025-11-30T07:57:31.185Z - GET /api/auth/verify
+2025-11-30T07:57:31.236Z - GET /api/orders
+2025-11-30T07:57:31.237Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:31.840Z - GET /api/auth/verify
+2025-11-30T07:57:31.858Z - GET /api/orders
+2025-11-30T07:57:31.858Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:32.447Z - GET /api/auth/verify
+2025-11-30T07:57:32.490Z - GET /api/orders
+2025-11-30T07:57:32.490Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:32.984Z - GET /api/auth/verify
+2025-11-30T07:57:33.023Z - GET /api/orders
+2025-11-30T07:57:33.023Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:33.382Z - GET /api/auth/verify
+2025-11-30T07:57:33.394Z - GET /api/orders
+2025-11-30T07:57:33.395Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:33.736Z - GET /api/auth/verify
+2025-11-30T07:57:33.773Z - GET /api/orders
+2025-11-30T07:57:33.774Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:34.063Z - GET /api/auth/verify
+2025-11-30T07:57:34.073Z - GET /api/orders
+2025-11-30T07:57:34.073Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:57:34.417Z - GET /api/auth/verify
+2025-11-30T07:57:34.430Z - GET /api/orders
+2025-11-30T07:57:34.432Z - GET /api/orders
+2025-11-30T07:57:35.079Z - GET /api/auth/verify
+2025-11-30T07:57:35.093Z - GET /api/orders
+2025-11-30T07:57:35.099Z - GET /api/orders
+2025-11-30T07:57:47.861Z - GET /api/orders
+2025-11-30T07:58:10.663Z - GET /api/auth/verify
+2025-11-30T07:58:10.677Z - GET /api/orders
+2025-11-30T07:58:10.679Z - GET /api/orders
+2025-11-30T07:58:11.893Z - GET /api/auth/verify
+2025-11-30T07:58:11.915Z - GET /api/auth/users
+2025-11-30T07:58:11.915Z - GET /api/auth/permissions
+2025-11-30T07:58:13.692Z - GET /api/auth/verify
+2025-11-30T07:58:13.708Z - GET /api/orders
+2025-11-30T07:58:13.708Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:58:14.142Z - GET /api/auth/verify
+2025-11-30T07:58:14.155Z - GET /api/orders
+2025-11-30T07:58:14.155Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:58:14.742Z - GET /api/auth/verify
+2025-11-30T07:58:14.752Z - GET /api/orders
+2025-11-30T07:58:14.754Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T07:58:15.109Z - GET /api/auth/verify
+2025-11-30T07:58:15.121Z - GET /api/orders
+2025-11-30T07:58:15.123Z - GET /api/orders
+2025-11-30T07:58:15.940Z - GET /api/auth/verify
+2025-11-30T07:58:15.952Z - GET /api/orders
+2025-11-30T07:58:15.952Z - GET /api/orders/status/%E6%9C%AA%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95_SLASH_%E6%8A%95%E8%AF%89
+请求的状态: 未处理订单_SLASH_投诉 解码后的状态: 未处理订单/投诉
+根据状态查询到的数据条数: 1
+查询结果: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    complaint_channel: '在线客服',
+    phone: '13900139000',
+    order_amount: '200.00',
+    situation_explanation: '物流延迟',
+    indemnitor: '李四',
+    compensation_amount: '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '补偿运费',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    'Complaint channel': '在线客服',
+    phone: '13900139000',
+    'Order Amount': '200.00',
+    'Situation Explanation': '物流延迟',
+    Indemnitor: '李四',
+    'Compensation Amount': '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '补偿运费'
+  }
+]
+2025-11-30T07:58:15.957Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 被驳回需赔付订单 解码后的状态: 被驳回需赔付订单
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:58:15.960Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 被驳回无需赔付 解码后的状态: 被驳回无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:58:16.418Z - GET /api/auth/verify
+2025-11-30T07:58:16.458Z - GET /api/orders
+2025-11-30T07:58:16.463Z - GET /api/orders
+2025-11-30T07:58:17.109Z - GET /api/auth/verify
+2025-11-30T07:58:17.120Z - GET /api/orders
+2025-11-30T07:58:17.122Z - GET /api/orders
+2025-11-30T07:58:17.539Z - GET /api/auth/verify
+2025-11-30T07:58:17.573Z - GET /api/orders
+2025-11-30T07:58:17.574Z - GET /api/orders/status/%E6%9C%AA%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95_SLASH_%E6%8A%95%E8%AF%89
+请求的状态: 未处理订单_SLASH_投诉 解码后的状态: 未处理订单/投诉
+根据状态查询到的数据条数: 1
+查询结果: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    complaint_channel: '在线客服',
+    phone: '13900139000',
+    order_amount: '200.00',
+    situation_explanation: '物流延迟',
+    indemnitor: '李四',
+    compensation_amount: '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '补偿运费',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    'Complaint channel': '在线客服',
+    phone: '13900139000',
+    'Order Amount': '200.00',
+    'Situation Explanation': '物流延迟',
+    Indemnitor: '李四',
+    'Compensation Amount': '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '补偿运费'
+  }
+]
+2025-11-30T07:58:17.596Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 被驳回需赔付订单 解码后的状态: 被驳回需赔付订单
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:58:17.604Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 被驳回无需赔付 解码后的状态: 被驳回无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T07:58:17.925Z - GET /api/auth/verify
+2025-11-30T07:58:17.971Z - GET /api/orders
+2025-11-30T07:58:17.977Z - GET /api/orders
+2025-11-30T07:58:18.697Z - GET /api/auth/verify
+2025-11-30T07:58:18.754Z - GET /api/orders
+2025-11-30T07:58:18.756Z - GET /api/orders
+2025-11-30T07:58:19.005Z - GET /api/auth/verify
+2025-11-30T07:58:19.049Z - GET /api/orders
+2025-11-30T07:58:19.050Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T07:58:32.075Z - GET /api/auth/verify
+2025-11-30T07:58:32.097Z - GET /api/auth/users
+2025-11-30T07:58:32.097Z - GET /api/auth/permissions
+2025-11-30T07:59:59.080Z - GET /api/auth/users
+2025-11-30T07:59:59.081Z - GET /api/auth/permissions
+2025-11-30T07:59:59.085Z - GET /api/auth/users
+2025-11-30T07:59:59.086Z - GET /api/auth/permissions
+2025-11-30T08:00:05.706Z - GET /api/auth/verify
+2025-11-30T08:00:05.729Z - GET /api/auth/users
+2025-11-30T08:00:05.729Z - GET /api/auth/permissions
+2025-11-30T08:00:20.511Z - GET /api/auth/verify
+2025-11-30T08:00:20.551Z - GET /api/auth/users
+2025-11-30T08:00:20.551Z - GET /api/auth/permissions
+2025-11-30T08:01:16.183Z - GET /api/auth/verify
+2025-11-30T08:01:16.216Z - GET /api/orders
+2025-11-30T08:01:16.217Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T08:01:16.632Z - GET /api/auth/verify
+2025-11-30T08:01:16.644Z - GET /api/orders
+2025-11-30T08:01:16.644Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T08:01:17.697Z - GET /api/auth/verify
+2025-11-30T08:01:17.715Z - GET /api/auth/users
+2025-11-30T08:01:17.716Z - GET /api/auth/permissions
+2025-11-30T08:01:19.248Z - GET /api/auth/verify
+2025-11-30T08:01:19.260Z - GET /api/orders
+2025-11-30T08:01:19.265Z - GET /api/orders
+2025-11-30T08:01:19.665Z - GET /api/auth/verify
+2025-11-30T08:01:19.677Z - GET /api/orders
+2025-11-30T08:01:19.677Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T08:01:20.365Z - GET /api/auth/verify
+2025-11-30T08:01:20.384Z - GET /api/auth/users
+2025-11-30T08:01:20.385Z - GET /api/auth/permissions
+2025-11-30T08:01:51.157Z - GET /api/auth/verify
+2025-11-30T08:01:51.181Z - GET /api/auth/users
+2025-11-30T08:01:51.184Z - GET /api/auth/permissions
+2025-11-30T08:02:56.294Z - GET /api/auth/users
+2025-11-30T08:02:56.294Z - GET /api/auth/permissions
+2025-11-30T08:02:56.296Z - GET /api/auth/users
+2025-11-30T08:02:56.296Z - GET /api/auth/permissions
+2025-11-30T08:03:29.942Z - GET /api/auth/users
+2025-11-30T08:03:29.943Z - GET /api/auth/permissions
+2025-11-30T08:03:29.944Z - GET /api/auth/users
+2025-11-30T08:03:29.945Z - GET /api/auth/permissions
+2025-11-30T08:03:55.656Z - GET /api/auth/users
+2025-11-30T08:03:55.657Z - GET /api/auth/permissions
+2025-11-30T08:03:55.660Z - GET /api/auth/permissions
+2025-11-30T08:03:55.660Z - GET /api/auth/users
+2025-11-30T08:04:12.697Z - GET /api/auth/verify
+2025-11-30T08:04:12.720Z - GET /api/auth/users
+2025-11-30T08:04:12.720Z - GET /api/auth/permissions
+2025-11-30T08:04:37.136Z - GET /api/auth/verify
+2025-11-30T08:04:37.173Z - GET /api/auth/users
+2025-11-30T08:04:37.174Z - GET /api/auth/permissions
+2025-11-30T08:04:40.958Z - GET /api/auth/verify
+2025-11-30T08:04:40.981Z - GET /api/auth/users
+2025-11-30T08:04:40.982Z - GET /api/auth/permissions
+2025-11-30T08:04:44.061Z - GET /api/auth/verify
+2025-11-30T08:04:44.084Z - GET /api/auth/users
+2025-11-30T08:04:44.085Z - GET /api/auth/permissions
+2025-11-30T08:12:19.355Z - GET /api/auth/verify
+2025-11-30T08:12:19.377Z - GET /api/auth/users
+2025-11-30T08:12:19.378Z - GET /api/auth/permissions
+2025-11-30T08:14:28.000Z - GET /api/auth/users
+2025-11-30T08:14:28.001Z - GET /api/auth/permissions
+2025-11-30T09:14:22.640Z - GET /api/auth/verify
+2025-11-30T09:14:22.677Z - GET /api/auth/users
+2025-11-30T09:14:22.678Z - GET /api/auth/permissions
+2025-11-30T09:17:07.994Z - GET /api/auth/verify
+2025-11-30T09:17:08.015Z - GET /api/auth/users
+2025-11-30T09:17:08.016Z - GET /api/auth/permissions
+2025-11-30T09:18:11.874Z - GET /api/auth/verify
+2025-11-30T09:18:11.908Z - GET /api/orders
+2025-11-30T09:18:11.910Z - GET /api/orders
+2025-11-30T09:18:14.790Z - GET /api/auth/verify
+2025-11-30T09:18:14.802Z - GET /api/orders
+2025-11-30T09:18:14.807Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T09:18:16.008Z - GET /api/auth/verify
+2025-11-30T09:18:16.025Z - GET /api/orders
+2025-11-30T09:18:16.026Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:16.724Z - GET /api/auth/verify
+2025-11-30T09:18:16.742Z - GET /api/orders
+2025-11-30T09:18:16.742Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 确认无需赔付 解码后的状态: 确认无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:17.325Z - GET /api/auth/verify
+2025-11-30T09:18:17.345Z - GET /api/auth/users
+2025-11-30T09:18:17.345Z - GET /api/auth/permissions
+2025-11-30T09:18:17.892Z - GET /api/auth/verify
+2025-11-30T09:18:17.908Z - GET /api/orders
+2025-11-30T09:18:17.909Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:18.791Z - GET /api/auth/verify
+2025-11-30T09:18:18.808Z - GET /api/auth/users
+2025-11-30T09:18:18.809Z - GET /api/auth/permissions
+2025-11-30T09:18:20.257Z - GET /api/auth/verify
+2025-11-30T09:18:20.269Z - GET /api/orders
+2025-11-30T09:18:20.273Z - GET /api/orders
+2025-11-30T09:18:20.940Z - GET /api/auth/verify
+2025-11-30T09:18:20.952Z - GET /api/orders
+2025-11-30T09:18:20.956Z - GET /api/orders
+2025-11-30T09:18:21.741Z - GET /api/auth/verify
+2025-11-30T09:18:21.759Z - GET /api/orders
+2025-11-30T09:18:21.759Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T09:18:22.074Z - GET /api/auth/verify
+2025-11-30T09:18:22.087Z - GET /api/orders
+2025-11-30T09:18:22.090Z - GET /api/orders
+2025-11-30T09:18:22.440Z - GET /api/auth/verify
+2025-11-30T09:18:22.453Z - GET /api/orders
+2025-11-30T09:18:22.456Z - GET /api/orders
+2025-11-30T09:18:22.974Z - GET /api/auth/verify
+2025-11-30T09:18:22.990Z - GET /api/orders
+2025-11-30T09:18:22.990Z - GET /api/orders/status/%E6%9C%AA%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95_SLASH_%E6%8A%95%E8%AF%89
+请求的状态: 未处理订单_SLASH_投诉 解码后的状态: 未处理订单/投诉
+根据状态查询到的数据条数: 1
+查询结果: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    complaint_channel: '在线客服',
+    phone: '13900139000',
+    order_amount: '200.00',
+    situation_explanation: '物流延迟',
+    indemnitor: '李四',
+    compensation_amount: '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '补偿运费',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    'Complaint channel': '在线客服',
+    phone: '13900139000',
+    'Order Amount': '200.00',
+    'Situation Explanation': '物流延迟',
+    Indemnitor: '李四',
+    'Compensation Amount': '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '补偿运费'
+  }
+]
+2025-11-30T09:18:22.996Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 被驳回需赔付订单 解码后的状态: 被驳回需赔付订单
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:22.998Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 被驳回无需赔付 解码后的状态: 被驳回无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:23.891Z - GET /api/auth/verify
+2025-11-30T09:18:23.907Z - GET /api/auth/users
+2025-11-30T09:18:23.907Z - GET /api/auth/permissions
+2025-11-30T09:18:24.473Z - GET /api/auth/verify
+2025-11-30T09:18:24.485Z - GET /api/orders
+2025-11-30T09:18:24.489Z - GET /api/orders
+2025-11-30T09:18:25.108Z - GET /api/auth/verify
+2025-11-30T09:18:25.119Z - GET /api/orders
+2025-11-30T09:18:25.124Z - GET /api/orders
+2025-11-30T09:18:25.407Z - GET /api/auth/verify
+2025-11-30T09:18:25.417Z - GET /api/orders
+2025-11-30T09:18:25.418Z - GET /api/orders/status/%E7%A1%AE%E8%AE%A4%E5%B7%B2%E8%B5%94%E4%BB%98
+请求的状态: 确认已赔付 解码后的状态: 确认已赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:25.840Z - GET /api/auth/verify
+2025-11-30T09:18:25.850Z - GET /api/orders
+2025-11-30T09:18:25.852Z - GET /api/orders
+2025-11-30T09:18:26.472Z - GET /api/auth/verify
+2025-11-30T09:18:26.483Z - GET /api/orders
+2025-11-30T09:18:26.485Z - GET /api/orders
+2025-11-30T09:18:26.856Z - GET /api/auth/verify
+2025-11-30T09:18:26.867Z - GET /api/orders
+2025-11-30T09:18:26.867Z - GET /api/orders/status/%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 无需赔付订单 解码后的状态: 无需赔付订单
+根据状态查询到的数据条数: 2
+查询结果: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    complaint_channel: '在线客服',
+    phone: '13600136000',
+    order_amount: '300.00',
+    situation_explanation: '描述不符',
+    indemnitor: '赵六',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '解释清楚无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    complaint_channel: '客服电话',
+    phone: '13700137000',
+    order_amount: '150.00',
+    situation_explanation: '包装破损',
+    indemnitor: '王五',
+    compensation_amount: '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '已修复无需赔偿',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 4,
+    pay_id: 'PAY004',
+    'Complaint channel': '在线客服',
+    phone: '13600136000',
+    'Order Amount': '300.00',
+    'Situation Explanation': '描述不符',
+    Indemnitor: '赵六',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '解释清楚无需赔偿'
+  },
+  {
+    id: 3,
+    pay_id: 'PAY003',
+    'Complaint channel': '客服电话',
+    phone: '13700137000',
+    'Order Amount': '150.00',
+    'Situation Explanation': '包装破损',
+    Indemnitor: '王五',
+    'Compensation Amount': '0.00',
+    status: '无需赔付订单',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '已修复无需赔偿'
+  }
+]
+2025-11-30T09:18:27.273Z - GET /api/auth/verify
+2025-11-30T09:18:27.284Z - GET /api/orders
+2025-11-30T09:18:27.289Z - GET /api/orders
+2025-11-30T09:18:27.640Z - GET /api/auth/verify
+2025-11-30T09:18:27.657Z - GET /api/orders
+2025-11-30T09:18:27.657Z - GET /api/orders/status/%E6%9C%AA%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95_SLASH_%E6%8A%95%E8%AF%89
+请求的状态: 未处理订单_SLASH_投诉 解码后的状态: 未处理订单/投诉
+根据状态查询到的数据条数: 1
+查询结果: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    complaint_channel: '在线客服',
+    phone: '13900139000',
+    order_amount: '200.00',
+    situation_explanation: '物流延迟',
+    indemnitor: '李四',
+    compensation_amount: '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '补偿运费',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    'Complaint channel': '在线客服',
+    phone: '13900139000',
+    'Order Amount': '200.00',
+    'Situation Explanation': '物流延迟',
+    Indemnitor: '李四',
+    'Compensation Amount': '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '补偿运费'
+  }
+]
+2025-11-30T09:18:27.662Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 被驳回需赔付订单 解码后的状态: 被驳回需赔付订单
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:27.665Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 被驳回无需赔付 解码后的状态: 被驳回无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:18:29.097Z - GET /api/auth/verify
+2025-11-30T09:18:29.175Z - GET /api/auth/users
+2025-11-30T09:18:29.175Z - GET /api/auth/permissions
+2025-11-30T09:18:34.118Z - GET /api/auth/verify
+2025-11-30T09:18:34.144Z - GET /api/auth/users
+2025-11-30T09:18:34.144Z - GET /api/auth/permissions
+2025-11-30T09:18:40.311Z - GET /api/auth/verify
+2025-11-30T09:18:40.335Z - GET /api/auth/users
+2025-11-30T09:18:40.336Z - GET /api/auth/permissions
+2025-11-30T09:19:18.932Z - GET /api/auth/verify
+2025-11-30T09:19:18.970Z - GET /api/auth/users
+2025-11-30T09:19:18.970Z - GET /api/auth/permissions
+2025-11-30T09:19:23.722Z - GET /api/auth/verify
+2025-11-30T09:19:23.753Z - GET /api/orders
+2025-11-30T09:19:23.755Z - GET /api/orders
+2025-11-30T09:19:25.155Z - GET /api/auth/verify
+2025-11-30T09:19:25.170Z - GET /api/auth/users
+2025-11-30T09:19:25.171Z - GET /api/auth/permissions
+2025-11-30T09:19:27.857Z - GET /api/auth/verify
+2025-11-30T09:19:27.876Z - GET /api/orders
+2025-11-30T09:19:27.879Z - GET /api/orders/status/%E6%9C%AA%E5%A4%84%E7%90%86%E8%AE%A2%E5%8D%95_SLASH_%E6%8A%95%E8%AF%89
+请求的状态: 未处理订单_SLASH_投诉 解码后的状态: 未处理订单/投诉
+根据状态查询到的数据条数: 1
+查询结果: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    complaint_channel: '在线客服',
+    phone: '13900139000',
+    order_amount: '200.00',
+    situation_explanation: '物流延迟',
+    indemnitor: '李四',
+    compensation_amount: '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    note: '补偿运费',
+    classification_of_payers: null,
+    detailed_explanation: null,
+    created_at: 2025-11-28T02:54:16.000Z,
+    updated_at: 2025-11-28T02:54:16.000Z,
+    images: null
+  }
+]
+返回给前端的数据: [
+  {
+    id: 2,
+    pay_id: 'PAY002',
+    'Complaint channel': '在线客服',
+    phone: '13900139000',
+    'Order Amount': '200.00',
+    'Situation Explanation': '物流延迟',
+    Indemnitor: '李四',
+    'Compensation Amount': '30.00',
+    status: '未处理订单/投诉',
+    time: 2025-11-28T02:54:16.000Z,
+    Note: '补偿运费'
+  }
+]
+2025-11-30T09:19:27.898Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E9%9C%80%E8%B5%94%E4%BB%98%E8%AE%A2%E5%8D%95
+请求的状态: 被驳回需赔付订单 解码后的状态: 被驳回需赔付订单
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:19:27.901Z - GET /api/orders/status/%E8%A2%AB%E9%A9%B3%E5%9B%9E%E6%97%A0%E9%9C%80%E8%B5%94%E4%BB%98
+请求的状态: 被驳回无需赔付 解码后的状态: 被驳回无需赔付
+根据状态查询到的数据条数: 0
+查询结果: []
+返回给前端的数据: []
+2025-11-30T09:19:29.388Z - GET /api/auth/verify
+2025-11-30T09:19:29.413Z - GET /api/auth/users
+2025-11-30T09:19:29.413Z - GET /api/auth/permissions
+2025-11-30T09:25:40.871Z - GET /api/auth/verify
+2025-11-30T09:25:40.892Z - GET /api/auth/users
+2025-11-30T09:25:40.892Z - GET /api/auth/permissions

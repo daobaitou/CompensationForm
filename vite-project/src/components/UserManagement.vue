@@ -1,33 +1,39 @@
 <template>
   <div class="user-management">
-    <h1>用户权限管理</h1>
+    <h1 class="page-title">用户权限管理</h1>
     
     <!-- 添加用户按钮 -->
     <div class="toolbar">
-      <el-button type="primary" @click="openAddUserDialog">添加用户</el-button>
+      <el-button type="primary" @click="openAddUserDialog" size="large">添加用户</el-button>
     </div>
     
     <!-- 用户列表表格 -->
-    <el-table :data="users" style="width: 100%" v-loading="loading">
-      <el-table-column prop="username" label="用户名" width="180"></el-table-column>
-      <el-table-column prop="role" label="角色" width="180">
+    <el-table :data="users" style="width: 100%" v-loading="loading" size="large" :cell-style="{ textAlign: 'left' }" :header-cell-style="{ textAlign: 'left', fontSize: '16px' }">
+      <el-table-column prop="username" label="用户名" width="220">
         <template #default="scope">
-          <el-tag :type="scope.row.role === 'admin' ? 'danger' : 'info'">
+          <span class="table-cell-text">{{ scope.row.username }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="role" label="角色" width="220">
+        <template #default="scope">
+          <el-tag :type="scope.row.role === 'admin' ? 'danger' : 'info'" size="large">
             {{ scope.row.role === 'admin' ? '超级管理员' : '普通用户' }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="openEditUserDialog(scope.row)">编辑</el-button>
-          <el-button 
-            size="small" 
-            type="danger" 
-            @click="deleteUser(scope.row.id)"
-            :disabled="scope.row.role === 'admin' && adminCount <= 1"
-          >
-            删除
-          </el-button>
+          <div class="action-buttons">
+            <el-button size="large" @click="openEditUserDialog(scope.row)">编辑</el-button>
+            <el-button 
+              size="large" 
+              type="danger" 
+              @click="deleteUser(scope.row.id)"
+              :disabled="scope.row.role === 'admin' && adminCount <= 1"
+            >
+              删除
+            </el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -36,21 +42,33 @@
     <el-dialog 
       :title="dialogTitle" 
       v-model="dialogVisible" 
-      width="600px"
+      width="650px"
       @close="resetForm"
+      :fullscreen="dialogFullscreen"
     >
-      <el-form :model="currentUser" :rules="rules" ref="userFormRef" label-width="100px">
+      <template #header="{ titleId, titleClass }">
+        <div class="dialog-header">
+          <h4 :id="titleId" :class="titleClass">{{ dialogTitle }}</h4>
+          <div class="dialog-header-actions">
+            <el-button @click="toggleFullscreen" size="small" link>
+              <span v-if="!dialogFullscreen">最大化</span>
+              <span v-else>恢复</span>
+            </el-button>
+          </div>
+        </div>
+      </template>
+      <el-form :model="currentUser" :rules="rules" ref="userFormRef" label-width="100px" label-position="left">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="currentUser.username" :disabled="isEditMode"></el-input>
+          <el-input v-model="currentUser.username" :disabled="isEditMode" size="default"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password" v-if="!isEditMode">
-          <el-input v-model="currentUser.password" type="password" show-password></el-input>
+          <el-input v-model="currentUser.password" type="password" show-password size="default"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword" v-if="!isEditMode">
-          <el-input v-model="currentUser.confirmPassword" type="password" show-password></el-input>
+          <el-input v-model="currentUser.confirmPassword" type="password" show-password size="default"></el-input>
         </el-form-item>
         <el-form-item label="角色" prop="role">
-          <el-select v-model="currentUser.role" placeholder="请选择角色" @change="handleRoleChange">
+          <el-select v-model="currentUser.role" placeholder="请选择角色" @change="handleRoleChange" size="default" style="width: 100%">
             <el-option label="超级管理员" value="admin"></el-option>
             <el-option label="普通用户" value="user"></el-option>
           </el-select>
@@ -59,25 +77,28 @@
         <!-- 权限选择（仅对普通用户显示） -->
         <el-form-item label="权限" v-if="currentUser.role === 'user'">
           <el-checkbox-group v-model="currentUser.permissions">
-            <el-tooltip 
-              v-for="permission in availablePermissions" 
-              :key="permission.value" 
-              :content="permission.description"
-              placement="top"
-            >
-              <el-checkbox 
-                :label="permission.value"
+            <div class="permission-grid">
+              <el-tooltip 
+                v-for="permission in availablePermissions" 
+                :key="permission.value" 
+                :content="permission.description"
+                placement="top"
               >
-                {{ permission.label }}
-              </el-checkbox>
-            </el-tooltip>
+                <el-checkbox 
+                  :label="permission.value"
+                  size="default"
+                >
+                  {{ permission.label }}
+                </el-checkbox>
+              </el-tooltip>
+            </div>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="submitUser">确定</el-button>
+          <el-button @click="dialogVisible = false" size="default">取消</el-button>
+          <el-button type="primary" @click="submitUser" size="default">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -144,6 +165,7 @@ const getPermissionDescription = (permissionValue) => {
 
 // 对话框相关
 const dialogVisible = ref(false)
+const dialogFullscreen = ref(false)
 const isEditMode = ref(false)
 const dialogTitle = computed(() => isEditMode.value ? '编辑用户' : '添加用户')
 
@@ -330,15 +352,26 @@ onMounted(() => {
   fetchUsers()
   fetchPermissions()
 })
+
+// 切换对话框全屏
+const toggleFullscreen = () => {
+  dialogFullscreen.value = !dialogFullscreen.value
+}
 </script>
 
 <style scoped>
 .user-management {
-  padding: 20px;
+  padding: 30px;
+}
+
+.page-title {
+  font-size: 24px;
+  margin-bottom: 25px;
+  color: #303133;
 }
 
 .toolbar {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-align: right;
 }
 
@@ -346,9 +379,50 @@ onMounted(() => {
   text-align: right;
 }
 
-.el-checkbox-group {
+.permission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .permission-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.el-checkbox {
+  height: auto;
+  padding: 8px;
+  margin-right: 0;
+}
+
+.dialog-header {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-header-actions {
+  flex-shrink: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.action-buttons .el-button {
+  margin: 0;
+}
+
+.table-cell-text {
+  font-size: 15px;
+  color: #606266;
+}
+
+.el-table :deep(.el-table__cell) {
+  font-size: 15px;
+  padding: 12px 0;
 }
 </style>

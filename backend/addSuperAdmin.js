@@ -11,7 +11,7 @@ const dbConfig = {
   queueLimit: 0
 };
 
-async function addSuperAdmin() {
+async function addSuperAdmin(username = 'superadmin', password = 'superadmin123') {
   let connection;
   
   try {
@@ -32,8 +32,8 @@ async function addSuperAdmin() {
     
     // 创建超级管理员用户
     const superAdmin = {
-      username: 'superadmin',
-      password: 'superadmin123',
+      username: username,
+      password: password,
       role: 'admin'
     };
     
@@ -48,10 +48,10 @@ async function addSuperAdmin() {
       
       // 更新现有用户的角色为管理员
       await connection.execute(
-        'UPDATE users SET role = ? WHERE username = ?', 
-        [superAdmin.role, superAdmin.username]
+        'UPDATE users SET role = ?, password = ? WHERE username = ?', 
+        [superAdmin.role, superAdmin.password, superAdmin.username]
       );
-      console.log(`用户 "${superAdmin.username}" 的角色已更新为超级管理员`);
+      console.log(`用户 "${superAdmin.username}" 的角色已更新为超级管理员，密码已重置`);
     } else {
       // 插入新的超级管理员用户
       const [result] = await connection.execute(
@@ -74,7 +74,11 @@ async function addSuperAdmin() {
 
 // 如果直接运行此脚本，则执行添加超级管理员操作
 if (require.main === module) {
-  addSuperAdmin();
+  const args = process.argv.slice(2);
+  const username = args[0] || 'superadmin';
+  const password = args[1] || 'superadmin123';
+  console.log(`正在创建超级管理员用户: ${username}`);
+  addSuperAdmin(username, password);
 }
 
 // 导出函数供其他模块使用
