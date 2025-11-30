@@ -49,3 +49,36 @@ JWT令牌生成成功
 2025-11-30T06:50:40.586Z - GET /api/auth/verify
 2025-11-30T06:50:40.622Z - GET /api/auth/users
 2025-11-30T06:50:40.622Z - GET /api/auth/permissions
+2025-11-30T07:09:46.098Z - GET /api/auth/verify
+2025-11-30T07:09:46.123Z - GET /api/auth/users
+2025-11-30T07:09:46.123Z - GET /api/auth/permissions
+2025-11-30T07:09:50.429Z - GET /api/auth/verify
+2025-11-30T07:09:50.448Z - GET /api/auth/users
+2025-11-30T07:09:50.449Z - GET /api/auth/permissions
+2025-11-30T07:12:42.271Z - POST /api/auth/login
+收到登录请求: { username: 'superadmin', password: 'superadmin123' }
+执行数据库查询: SELECT * FROM users WHERE username = ? [ 'superadmin' ]
+数据库查询结果: [
+  {
+    id: 2,
+    username: 'superadmin',
+    password: 'superadmin123',
+    created_at: 2025-11-29T16:08:31.000Z,
+    role: 'admin'
+  }
+]
+找到用户: {
+  id: 2,
+  username: 'superadmin',
+  password: 'superadmin123',
+  created_at: 2025-11-29T16:08:31.000Z,
+  role: 'admin'
+}
+密码匹配，生成JWT令牌
+JWT令牌生成成功
+2025-11-30T07:12:42.278Z - GET /api/auth/verify
+2025-11-30T07:12:42.308Z - GET /api/orders
+2025-11-30T07:12:42.308Z - GET /api/orders
+2025-11-30T07:12:43.983Z - GET /api/auth/verify
+2025-11-30T07:12:44.000Z - GET /api/auth/users
+2025-11-30T07:12:44.001Z - GET /api/auth/permissions
