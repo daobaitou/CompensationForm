@@ -27,6 +27,11 @@
           </select>
         </div>
         
+        <div class="form-group" v-if="reviewFormDataForNeed.status === 'CONFIRMED_PAYMENT'">
+          <label>审核意见:</label>
+          <textarea v-model="reviewFormDataForNeed.reviewComment" rows="4" placeholder="请输入审核意见"></textarea>
+        </div>
+        
         <div class="form-group" v-if="reviewFormDataForNeed.status === 'REJECTED_NEED_COMPENSATION'">
           <label>驳回理由:</label>
           <textarea v-model="reviewFormDataForNeed.rejectReason" rows="4" placeholder="请输入驳回理由"></textarea>
@@ -54,6 +59,11 @@
             <option value="CONFIRMED_NO_COMPENSATION">同意不赔付</option>
             <option value="REJECTED_NO_COMPENSATION">驳回订单</option>
           </select>
+        </div>
+        
+        <div class="form-group" v-if="reviewFormDataForNo.status === 'CONFIRMED_NO_COMPENSATION'">
+          <label>审核意见:</label>
+          <textarea v-model="reviewFormDataForNo.reviewComment" rows="4" placeholder="请输入审核意见"></textarea>
         </div>
         
         <div class="form-group" v-if="reviewFormDataForNo.status === 'REJECTED_NO_COMPENSATION'">
@@ -105,7 +115,8 @@ const reviewFormDataForNeed = ref({
   id: null,
   pay_id: '',
   status: 'CONFIRMED_PAYMENT',
-  rejectReason: ''
+  rejectReason: '',
+  reviewComment: '' // 新增审核意见字段
 })
 
 // 弹窗相关状态 - 无需赔付订单
@@ -114,7 +125,8 @@ const reviewFormDataForNo = ref({
   id: null,
   pay_id: '',
   status: 'CONFIRMED_NO_COMPENSATION',
-  rejectReason: ''
+  rejectReason: '',
+  reviewComment: '' // 新增审核意见字段
 })
 
 // 过滤数据以显示"需赔付订单"和"无需赔付订单"状态的订单
@@ -154,7 +166,8 @@ const openReviewModalForNeed = (item) => {
     id: item.id,
     pay_id: item.pay_id,
     status: 'CONFIRMED_PAYMENT',
-    rejectReason: ''
+    rejectReason: '',
+    reviewComment: ''
   }
   showReviewModalForNeed.value = true
 }
@@ -166,7 +179,8 @@ const closeReviewModalForNeed = () => {
     id: null,
     pay_id: '',
     status: 'CONFIRMED_PAYMENT',
-    rejectReason: ''
+    rejectReason: '',
+    reviewComment: ''
   }
 }
 
@@ -207,11 +221,20 @@ const submitReviewForNeed = async () => {
     if (reviewFormDataForNeed.value.status === 'CONFIRMED_PAYMENT') {
       // 确认可赔付
       updateDataObj.status = OrderStatus.CONFIRMED_PAYMENT;
+      // 添加审核意见到备注字段
+      if (reviewFormDataForNeed.value.reviewComment) {
+        const separator = updateDataObj.Note ? '\n' : '';
+        updateDataObj.Note += `${separator}审核意见：${reviewFormDataForNeed.value.reviewComment}`;
+      }
       console.log('设置状态为确认可赔付');
     } else if (reviewFormDataForNeed.value.status === 'REJECTED_NEED_COMPENSATION') {
       // 驳回需赔付订单
       updateDataObj.status = OrderStatus.REJECTED_NEED_COMPENSATION;
-      updateDataObj.Note = reviewFormDataForNeed.value.rejectReason || ''; // 将驳回理由添加到备注中
+      // 将驳回理由添加到备注中
+      if (reviewFormDataForNeed.value.rejectReason) {
+        const separator = updateDataObj.Note ? '\n' : '';
+        updateDataObj.Note += `${separator}驳回理由：${reviewFormDataForNeed.value.rejectReason}`;
+      }
       console.log('设置状态为被驳回需赔付订单，驳回理由:', reviewFormDataForNeed.value.rejectReason);
     }
     
@@ -260,7 +283,8 @@ const openReviewModalForNo = (item) => {
     id: item.id,
     pay_id: item.pay_id,
     status: 'CONFIRMED_NO_COMPENSATION',
-    rejectReason: ''
+    rejectReason: '',
+    reviewComment: ''
   }
   showReviewModalForNo.value = true
 }
@@ -272,7 +296,8 @@ const closeReviewModalForNo = () => {
     id: null,
     pay_id: '',
     status: 'CONFIRMED_NO_COMPENSATION',
-    rejectReason: ''
+    rejectReason: '',
+    reviewComment: ''
   }
 }
 
@@ -313,11 +338,20 @@ const submitReviewForNo = async () => {
     if (reviewFormDataForNo.value.status === 'CONFIRMED_NO_COMPENSATION') {
       // 确认无需赔付
       updateDataObj.status = OrderStatus.CONFIRMED_NO_COMPENSATION;
+      // 添加审核意见到备注字段
+      if (reviewFormDataForNo.value.reviewComment) {
+        const separator = updateDataObj.Note ? '\n' : '';
+        updateDataObj.Note += `${separator}审核意见：${reviewFormDataForNo.value.reviewComment}`;
+      }
       console.log('设置状态为确认无需赔付');
     } else if (reviewFormDataForNo.value.status === 'REJECTED_NO_COMPENSATION') {
       // 驳回无需赔付订单
       updateDataObj.status = OrderStatus.REJECTED_NO_COMPENSATION;
-      updateDataObj.Note = reviewFormDataForNo.value.rejectReason || ''; // 将驳回理由添加到备注中
+      // 将驳回理由添加到备注中
+      if (reviewFormDataForNo.value.rejectReason) {
+        const separator = updateDataObj.Note ? '\n' : '';
+        updateDataObj.Note += `${separator}驳回理由：${reviewFormDataForNo.value.rejectReason}`;
+      }
       console.log('设置状态为被驳回无需赔付，驳回理由:', reviewFormDataForNo.value.rejectReason);
     }
     
