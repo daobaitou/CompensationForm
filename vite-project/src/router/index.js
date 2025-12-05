@@ -14,6 +14,7 @@ import CompletedOrders from '../components/CompletedOrders.vue'
 import Login from '../components/Login.vue' // 添加导入
 import LoginLayout from '../components/LoginLayout.vue'
 import UserManagement from '../components/UserManagement.vue' // 导入用户管理组件
+import Profile from '../components/Profile.vue' // 导入个人信息组件
 import { useAuthStore } from '../stores/auth'
 
 
@@ -80,6 +81,10 @@ const routes = [
     path: '/system/users',
     component: UserManagement,
     meta: { requiresAdmin: true } // 添加管理员权限要求
+  },
+  {
+    path: '/profile',
+    component: Profile
   }
 
 ]

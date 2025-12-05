@@ -92,8 +92,6 @@ export const getAllUsers = async () => {
   return data.users
 }
 
-
-
 // 创建用户
 export const createUser = async (userData) => {
   const token = localStorage.getItem('token');
@@ -115,6 +113,7 @@ export const createUser = async (userData) => {
   return data
 }
 
+// 更新用户
 export const updateUser = async (userId, userData) => {
   const token = localStorage.getItem('token');
   const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
@@ -209,4 +208,25 @@ export const getAllPermissions = async () => {
     { name: 'manage_permissions', description: '管理权限' },
     { name: 'view_reports', description: '查看报表' }
   ];
+}
+
+// 修改密码
+export const updatePassword = async (userId, passwordData) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_BASE_URL}/auth/users/${userId}/password`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(passwordData)
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || '修改密码失败');
+  }
+
+  return data;
 }

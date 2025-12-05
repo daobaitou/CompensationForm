@@ -24,12 +24,18 @@
       <el-table-column label="操作">
         <template #default="scope">
           <div class="action-buttons">
-            <el-button size="large" @click="openEditUserDialog(scope.row)">编辑</el-button>
+            <el-button 
+              size="large" 
+              @click="openEditUserDialog(scope.row)"
+              :disabled="scope.row.role === 'admin'"
+            >
+              编辑
+            </el-button>
             <el-button 
               size="large" 
               type="danger" 
               @click="deleteUser(scope.row.id)"
-              :disabled="scope.row.role === 'admin' && adminCount <= 1"
+              :disabled="scope.row.role === 'admin'"
             >
               删除
             </el-button>

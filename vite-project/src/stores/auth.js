@@ -3,30 +3,26 @@ import { login as loginApi, logout as logoutApi, verifyToken } from '../services
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
     token: localStorage.getItem('token') || null,
-    isAuthenticated: false
   }),
 
   getters: {
+    isAuthenticated: (state) => !!state.token,
+    isAdmin: (state) => state.user?.role === 'admin',
     hasPermission: (state) => (permission) => {
-      // 超级管理员拥有所有权限
-      if (state.user && state.user.role === 'admin') {
-        return true;
-      }
-      return state.user?.permissions?.includes(permission) || false
+      if (!state.user) return false
+      if (state.user.role === 'admin') return true
+      return Array.isArray(state.user.permissions) && state.user.permissions.includes(permission)
     },
     hasAnyPermission: (state) => (permissions) => {
-      // 超级管理员拥有所有权限
-      if (state.user && state.user.role === 'admin') {
-        return true;
-      }
+      if (!state.user) return false
+      if (state.user.role === 'admin') return true
       return permissions.some(permission => 
-        state.user?.permissions?.includes(permission)
+        Array.isArray(state.user.permissions) && state.user.permissions.includes(permission)
       )
     },
     getUserPermissions: (state) => {
-      // 超级管理员拥有所有权限
       if (state.user && state.user.role === 'admin') {
         return [
           'add_order',
@@ -40,9 +36,6 @@ export const useAuthStore = defineStore('auth', {
         ];
       }
       return state.user?.permissions || []
-    },
-    isAdmin: (state) => {
-      return state.user && state.user.role === 'admin';
     }
   },
 
@@ -57,10 +50,10 @@ export const useAuthStore = defineStore('auth', {
         
         this.token = response.token
         this.user = response.user
-        this.isAuthenticated = true
         
-        // 保存token到localStorage
+        // 保存到localStorage
         localStorage.setItem('token', response.token)
+        localStorage.setItem('user', JSON.stringify(response.user))
         
         return response
       } catch (error) {
@@ -70,30 +63,43 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    logout() {
-      this.user = null
-      this.token = null
-      this.isAuthenticated = false
-      localStorage.removeItem('token')
+    async logout() {
+      try {
+        if (this.token) {
+          await logoutApi(this.token)
+        }
+      } catch (error) {
+        console.error('登出API调用失败:', error)
+      } finally {
+        this.token = null
+        this.user = null
+        
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+      }
     },
 
     async verifyToken() {
       if (!this.token) {
-        this.logout()
         return false
       }
 
       try {
         const response = await verifyToken(this.token)
         
-        if (!response || !response.user) {
-          throw new Error('验证失败')
+        if (response.valid) {
+          // 更新用户信息（以防权限发生变化）
+          this.user = response.user
+          localStorage.setItem('user', JSON.stringify(response.user))
+          return true
+        } else {
+          // Token无效，清理本地存储
+          this.logout()
+          return false
         }
-        
-        this.user = response.user
-        this.isAuthenticated = true
-        return true
       } catch (error) {
+        console.error('Token验证失败:', error)
+        // 验证失败，清理本地存储
         this.logout()
         return false
       }
@@ -101,10 +107,17 @@ export const useAuthStore = defineStore('auth', {
 
     initializeAuth() {
       const token = localStorage.getItem('token')
-      if (token) {
+      const user = JSON.parse(localStorage.getItem('user'))
+      
+      if (token && user) {
         this.token = token
-        this.isAuthenticated = true
+        this.user = user
       }
+    },
+
+    updateUserInfo(userInfo) {
+      this.user = { ...this.user, ...userInfo }
+      localStorage.setItem('user', JSON.stringify(this.user))
     }
   }
 })

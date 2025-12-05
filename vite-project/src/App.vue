@@ -2,16 +2,18 @@
   <div class="app-container">
     <!-- 左侧菜单（除了登录页都显示）-->
     <div v-if="!isLoginPage" class="sidebar">
-      <div class="user-info"v-if="authStore.user">
+      <div class="user-info" v-if="authStore.user">
         <div class="username">{{ authStore.user?.username }}</div>
-        <el-button 
-          type="danger" 
-          size="small" 
-          @click="handleLogout"
-          class="logout-btn"
-        >
-          登出
-        </el-button>
+        <div class="user-actions">
+          <el-button 
+            type="primary" 
+            size="small" 
+            @click="goToProfile"
+            class="profile-btn"
+          >
+            编辑
+          </el-button>
+        </div>
       </div>
 
       <div v-for="(tab, index) in filteredTabs" :key="index" class="menu-group">
@@ -51,8 +53,8 @@
 </template>
 
 <script setup>
-import { computed ,ref, onBeforeUnmount} from 'vue'
-import { useRouter, useRoute} from 'vue-router'
+import { computed, ref, onBeforeUnmount } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
@@ -63,26 +65,9 @@ const authStore = useAuthStore()
 // 判断是否为登录页面
 const isLoginPage = computed(() => route.path === '/login')
 
-const handleLogout = async () => {
-  try {
-    await ElMessageBox.confirm('确定要登出吗？', '确认登出', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-    
-    await authStore.logout()
-    ElMessage.success('登出成功')
-    router.push('/login')
-  } catch (error) {
-    if (error === 'cancel') {
-      // 用户取消登出
-      return
-    }
-    ElMessage.error('登出失败')
-  }
+const goToProfile = () => {
+  router.push('/profile')
 }
-
 
 const tabs = [
   // 投诉订单：直接作为一级菜单
@@ -116,7 +101,9 @@ const tabs = [
     ]
   },
   // 用户管理：仅超级管理员可见
-  { path: '/system/users', title: '用户管理', adminOnly: true }
+  { path: '/system/users', title: '用户管理', adminOnly: true },
+  // 个人信息页面
+  { path: '/profile', title: '个人信息' }
 ]
 
 // 过滤菜单项，仅显示当前用户有权访问的菜单
@@ -162,7 +149,12 @@ const filteredTabs = computed(() => {
   color: #303133;
 }
 
-.logout-btn {
+.user-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.profile-btn {
   min-width: auto;
 }
 

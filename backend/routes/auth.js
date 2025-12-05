@@ -319,34 +319,67 @@ router.put('/users/:id', async (req, res) => {
       return res.status(401).json({ message: '令牌无效或已过期' });
     }
 
-    // 检查用户是否为管理员
-    if (decoded.role !== 'admin') {
+    // 检查用户是否为管理员或用户本人
+    if (decoded.role !== 'admin' && decoded.id != userId) {
       return res.status(403).json({ message: '权限不足' });
     }
 
     try {
-      const { role, permissions } = req.body;
+      const { username, role, permissions } = req.body;
 
       // 检查用户是否存在
-      const [existingUsers] = await db.query('SELECT id FROM users WHERE id = ?', [userId]);
+      const [existingUsers] = await db.query('SELECT id, role FROM users WHERE id = ?', [userId]);
       if (existingUsers.length === 0) {
         return res.status(404).json({ message: '用户不存在' });
+      }
+
+      const targetUser = existingUsers[0];
+
+      // 检查是否试图编辑其他管理员
+      if (targetUser.role === 'admin' && decoded.id != userId) {
+        return res.status(403).json({ message: '不能编辑其他超级管理员' });
+      }
+
+      // 如果提供了用户名，检查是否与其他用户重复
+      if (username) {
+        const [duplicateUsers] = await db.query('SELECT id FROM users WHERE username = ? AND id != ?', [username, userId]);
+        if (duplicateUsers.length > 0) {
+          return res.status(400).json({ message: '用户名已存在' });
+        }
       }
 
       // 开始事务
       await db.query('BEGIN');
 
       try {
-        // 更新用户角色
-        await db.query('UPDATE users SET role = ? WHERE id = ?', [role, userId]);
+        // 更新用户信息
+        const updateFields = [];
+        const updateValues = [];
+        
+        if (username !== undefined) {
+          updateFields.push('username = ?');
+          updateValues.push(username);
+        }
+        
+        if (role !== undefined && decoded.role === 'admin') {
+          // 只有管理员可以更改角色
+          updateFields.push('role = ?');
+          updateValues.push(role);
+        }
+        
+        if (updateFields.length > 0) {
+          const query = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
+          updateValues.push(userId);
+          await db.query(query, updateValues);
+        }
 
-        // 如果是普通用户，更新权限
-        if (role === 'user') {
+        // 如果是普通用户且提供了权限信息，则更新权限（仅管理员可以操作）
+        if (role === 'user' && Array.isArray(permissions) && decoded.role === 'admin') {
           // 删除现有权限
           await db.query('DELETE FROM user_permissions WHERE user_id = ?', [userId]);
 
           // 如果有新权限，添加它们
-          if (Array.isArray(permissions) && permissions.length > 0) {
+          if (permissions.length > 0) {
             // 获取权限ID
             const placeholders = permissions.map(() => '?').join(',');
             const [permissionResults] = await db.query(
@@ -368,7 +401,7 @@ router.put('/users/:id', async (req, res) => {
               );
             }
           }
-        } else {
+        } else if (role === 'admin' && decoded.role === 'admin') {
           // 如果用户是管理员，删除其所有权限记录
           await db.query('DELETE FROM user_permissions WHERE user_id = ?', [userId]);
         }
@@ -412,16 +445,28 @@ router.delete('/users/:id', async (req, res) => {
     }
 
     try {
-      // 检查用户是否存在
-      const [existingUsers] = await db.query('SELECT id FROM users WHERE id = ?', [userId]);
+      // 检查要删除的用户是否存在
+      const [existingUsers] = await db.query('SELECT id, role FROM users WHERE id = ?', [userId]);
       if (existingUsers.length === 0) {
         return res.status(404).json({ message: '用户不存在' });
       }
 
+      const targetUser = existingUsers[0];
+      
+      // 检查是否试图删除自己
+      if (decoded.id == userId) {
+        return res.status(400).json({ message: '不能删除自己' });
+      }
+
       // 检查是否是最后一个管理员
       const [adminUsers] = await db.query('SELECT COUNT(*) as count FROM users WHERE role = "admin"');
-      if (existingUsers[0].role === 'admin' && adminUsers[0].count <= 1) {
+      if (targetUser.role === 'admin' && adminUsers[0].count <= 1) {
         return res.status(400).json({ message: '不能删除最后一个管理员' });
+      }
+
+      // 检查是否试图删除其他超级管理员
+      if (targetUser.role === 'admin') {
+        return res.status(403).json({ message: '不能删除其他超级管理员' });
       }
 
       // 开始事务
@@ -448,6 +493,55 @@ router.delete('/users/:id', async (req, res) => {
       }
     } catch (error) {
       console.error('删除用户错误:', error);
+      res.status(500).json({ message: '服务器内部错误' });
+    }
+  });
+});
+
+// 修改用户密码
+router.put('/users/:id/password', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  const userId = req.params.id;
+  const { oldPassword, newPassword } = req.body;
+
+  if (!token) {
+    return res.status(401).json({ message: '未提供认证令牌' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET || 'compensation_secret_key', async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: '令牌无效或已过期' });
+    }
+
+    try {
+      // 检查用户是否存在
+      const [existingUsers] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+      if (existingUsers.length === 0) {
+        return res.status(404).json({ message: '用户不存在' });
+      }
+
+      const user = existingUsers[0];
+
+      // 验证用户是否有权限修改密码（管理员可以修改任何用户密码，普通用户只能修改自己的密码）
+      if (decoded.role !== 'admin' && decoded.id != userId) {
+        return res.status(403).json({ message: '权限不足' });
+      }
+
+      // 如果是普通用户修改自己的密码，需要验证原密码
+      if (decoded.role !== 'admin' && decoded.id == userId) {
+        if (oldPassword !== user.password) {
+          return res.status(400).json({ message: '原密码错误' });
+        }
+      }
+
+      // 更新密码
+      await db.query('UPDATE users SET password = ? WHERE id = ?', [newPassword, userId]);
+
+      res.json({
+        message: '密码修改成功'
+      });
+    } catch (error) {
+      console.error('修改密码错误:', error);
       res.status(500).json({ message: '服务器内部错误' });
     }
   });
