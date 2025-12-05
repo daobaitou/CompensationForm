@@ -392,5 +392,66 @@ router.put('/users/:id', async (req, res) => {
   });
 });
 
+// 删除用户（仅管理员）
+router.delete('/users/:id', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  const userId = req.params.id;
+
+  if (!token) {
+    return res.status(401).json({ message: '未提供认证令牌' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET || 'compensation_secret_key', async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: '令牌无效或已过期' });
+    }
+
+    // 检查用户是否为管理员
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({ message: '权限不足' });
+    }
+
+    try {
+      // 检查用户是否存在
+      const [existingUsers] = await db.query('SELECT id FROM users WHERE id = ?', [userId]);
+      if (existingUsers.length === 0) {
+        return res.status(404).json({ message: '用户不存在' });
+      }
+
+      // 检查是否是最后一个管理员
+      const [adminUsers] = await db.query('SELECT COUNT(*) as count FROM users WHERE role = "admin"');
+      if (existingUsers[0].role === 'admin' && adminUsers[0].count <= 1) {
+        return res.status(400).json({ message: '不能删除最后一个管理员' });
+      }
+
+      // 开始事务
+      await db.query('BEGIN');
+
+      try {
+        // 删除用户权限关联记录
+        await db.query('DELETE FROM user_permissions WHERE user_id = ?', [userId]);
+        
+        // 删除用户
+        await db.query('DELETE FROM users WHERE id = ?', [userId]);
+
+        // 提交事务
+        await db.query('COMMIT');
+
+        res.json({
+          message: '用户删除成功'
+        });
+      } catch (error) {
+        // 回滚事务
+        await db.query('ROLLBACK');
+        console.error('删除用户错误:', error);
+        throw error;
+      }
+    } catch (error) {
+      console.error('删除用户错误:', error);
+      res.status(500).json({ message: '服务器内部错误' });
+    }
+  });
+});
+
   return router;
 };
